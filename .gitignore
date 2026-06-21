@@ -1,0 +1,7 @@
+venv/
+_pycache_/
+*.pyc
+kejahunt.db
+instance/
+static/uploads/
+.env

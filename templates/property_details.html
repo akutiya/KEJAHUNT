@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ property.title }}</title>
+</head>
+<body>
+
+<a href="/properties">⬅ Back</a>
+
+<h1>{{ property.title }}</h1>
+
+{% if property.image_url %}
+    <img src="{{ property.image_url }}" width="400">
+{% endif %}
+
+<h3>💰 KES {{ property.price }}</h3>
+
+<p><b>Location:</b> {{ property.location }}</p>
+
+<p><b>Bedrooms:</b> {{ property.bedrooms }}</p>
+<p><b>Bathrooms:</b> {{ property.bathrooms }}</p>
+
+<hr>
+
+<p>{{ property.description }}</p>
+
+<hr>
+
+<h2>📞 Contact Landlord</h2>
+
+{% if property.phone %}
+
+    <a href="https://wa.me/{{ property.phone }}?text=Hello%20I%20am%20interested%20in%20your%20property%20('{{ property.title }}')"
+       target="_blank">
+
+        <button style="
+            background-color:green;
+            color:white;
+            padding:10px;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+        ">
+            Chat on WhatsApp
+        </button>
+
+    </a>
+
+{% else %}
+
+    <p>No phone number provided</p>
+
+{% endif %}
+
+</body>
+</html>

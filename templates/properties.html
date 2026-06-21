@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Properties - KEJAHUNT</title>
+</head>
+<body>
+
+<h1>🏠 Available Houses in KEJAHUNT</h1>
+
+<p>Find your next home in Kenya</p>
+
+<hr>
+<form method="GET" action="/properties">
+
+    <input type="text"
+           name="q"
+           placeholder="Search location, e.g. Nairobi, Kilimani"
+           value="{{ query if query else '' }}">
+
+    <button type="submit">Search</button>
+
+</form>
+
+<hr>
+
+{% for p in properties %}
+
+    <div style="
+        border:1px solid #ccc;
+        padding:15px;
+        margin:15px;
+        border-radius:10px;
+        width:300px;
+        display:inline-block;
+        vertical-align:top;
+    ">
+
+        {% if p.image_url %}
+            <img src="{{ p.image_url }}" width="100%" style="border-radius:8px;">
+        {% else %}
+            <p><i>No image available</i></p>
+        {% endif %}
+
+        <h2>{{ p.title }}</h2>
+
+        <p>📍 {{ p.location }}</p>
+
+        <p>💰 KES {{ p.price }}</p>
+
+        <p>🛏 {{ p.bedrooms }} Bedrooms</p>
+
+        <p>🛁 {{ p.bathrooms }} Bathrooms</p>
+
+        <hr>
+
+        <a href="/property/{{ p.id }}">
+            <button>View Details</button>
+        </a>
+
+    </div>
+
+{% else %}
+
+    <p>No properties available yet.</p>
+
+{% endfor %}
+
+</body>
+</html>

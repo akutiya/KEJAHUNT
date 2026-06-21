@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Properties</title>
+</head>
+<body>
+
+<h1>🏠 My Listings</h1>
+
+<a href="/add_property">➕ Add New Property</a>
+
+<hr>
+
+{% for p in properties %}
+
+    <div style="border:1px solid black; padding:10px; margin:10px;">
+
+        <h2>{{ p.title }}</h2>
+
+        <p>{{ p.description }}</p>
+
+        <p><b>Price:</b> KES {{ p.price }}</p>
+
+        <p><b>Location:</b> {{ p.location }}</p>
+
+        <p><b>Bedrooms:</b> {{ p.bedrooms }}</p>
+
+        <p><b>Bathrooms:</b> {{ p.bathrooms }}</p>
+
+    </div>
+
+{% endfor %}
+
+</body>
+</html>
