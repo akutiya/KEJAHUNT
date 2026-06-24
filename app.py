@@ -1,14 +1,8 @@
 import uuid
 import os
+import secrets
 from werkzeug.utils import secure_filename
-
-from flask import (
-    Flask,
-    render_template,
-    request,
-    redirect,
-    url_for
-)
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 from flask_login import (
     LoginManager,
@@ -61,19 +55,15 @@ with app.app_context():
 # HOME
 @app.route('/')
 def home():
-
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
-
     return render_template('index.html')
 
 
 # REGISTER
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-
     if request.method == 'POST':
-
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
@@ -105,16 +95,13 @@ def register():
 # LOGIN
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
     if request.method == 'POST':
-
         email = request.form['email']
         password = request.form['password']
 
         user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password, password):
-
             login_user(user)
             return redirect(url_for('dashboard'))
 
@@ -127,10 +114,8 @@ def login():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-
     if current_user.role == "landlord":
         return redirect(url_for('landlord_dashboard'))
-
     return redirect(url_for('user_dashboard'))
 
 
@@ -138,10 +123,8 @@ def dashboard():
 @app.route('/user_dashboard')
 @login_required
 def user_dashboard():
-
     if current_user.role != "user":
         return redirect(url_for('dashboard'))
-
     return render_template(
         'dashboard/user_dashboard.html',
         user=current_user
@@ -152,10 +135,8 @@ def user_dashboard():
 @app.route('/landlord_dashboard')
 @login_required
 def landlord_dashboard():
-
     if current_user.role != "landlord":
         return redirect(url_for('dashboard'))
-
     return render_template(
         'dashboard/landlord_dashboard.html',
         user=current_user
@@ -166,7 +147,6 @@ def landlord_dashboard():
 @app.route('/logout')
 @login_required
 def logout():
-
     logout_user()
     return redirect(url_for('home'))
 
@@ -179,14 +159,11 @@ def logout():
 @app.route('/add_property', methods=['GET', 'POST'])
 @login_required
 def add_property():
-
     if current_user.role != "landlord":
         return "Only landlords can add properties."
 
     if request.method == 'POST':
-
         image = request.files['image']
-
         filename = None
 
         if image:
@@ -212,11 +189,11 @@ def add_property():
 
     return render_template('add_property.html')
 
+
 # LANDLORD PROPERTIES
 @app.route('/my_properties')
 @login_required
 def my_properties():
-
     if current_user.role != "landlord":
         return "Unauthorized"
 
@@ -235,17 +212,14 @@ def my_properties():
 # =========================
 @app.route('/properties')
 def properties():
-
     query = request.args.get('q')
 
     if query:
-
         props = Property.query.filter(
             Property.title.contains(query) |
             Property.location.contains(query) |
             Property.description.contains(query)
         ).all()
-
     else:
         props = Property.query.all()
 
@@ -259,14 +233,138 @@ def properties():
 # PROPERTY DETAILS
 @app.route('/property/<int:property_id>')
 def property_details(property_id):
-
     prop = Property.query.get_or_404(property_id)
-
     return render_template(
         'property_details.html',
         property=prop
     )
 
 
+# =========================
+# 📱 MOBILE API ROUTES
+# =========================
+
+@app.route('/api/register', methods=['POST'])
+def api_register():
+    data = request.get_json()
+    print("Register data received:", data)
+
+    if not data:
+        return jsonify({'message': 'No data received'}), 400
+
+    email = data.get('email')
+    full_name = data.get('full_name')
+    phone = data.get('phone')
+    password = data.get('password')
+    role = data.get('role')
+
+    if not email or not full_name or not password or not role:
+        return jsonify({'message': 'Missing required fields'}), 400
+
+    if User.query.filter_by(email=email).first():
+        return jsonify({'message': 'Email already exists'}), 400
+
+    if User.query.filter_by(username=email).first():
+        return jsonify({'message': 'User already exists'}), 400
+
+    hashed_password = generate_password_hash(password)
+    token = secrets.token_hex(16)
+
+    new_user = User(
+        username=email,
+        email=email,
+        password=hashed_password,
+        role=role,
+        token=token
+    )
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({
+        'message': 'Registered successfully',
+        'role': role,
+        'full_name': full_name,
+        'email': email,
+        'token': token
+    }), 201
+
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    data = request.get_json()
+    print("Login data received:", data)
+
+    if not data:
+        return jsonify({'message': 'No data received'}), 400
+
+    email = data.get('email')
+    password = data.get('password')
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user or not check_password_hash(user.password, password):
+        return jsonify({'message': 'Invalid credentials'}), 401
+
+    token = secrets.token_hex(16)
+    user.token = token
+    db.session.commit()
+
+    return jsonify({
+        'message': 'Login successful',
+        'role': user.role,
+        'full_name': user.username,
+        'email': user.email,
+        'token': token
+    }), 200
+
+
+@app.route('/api/properties', methods=['GET'])
+def get_properties():
+    properties = Property.query.all()
+    result = []
+    for p in properties:
+        landlord = User.query.get(p.landlord_id)
+        result.append({
+            'id': p.id,
+            'title': p.title,
+            'location': p.location,
+            'price': str(p.price),
+            'description': p.description,
+            'image_url': p.image_file,
+            'landlord_name': landlord.username if landlord else 'Unknown',
+            'landlord_id': p.landlord_id
+        })
+    return jsonify(result)
+
+
+@app.route('/api/properties', methods=['POST'])
+def api_post_property():
+    token = request.headers.get('Authorization', '').replace('Bearer ', '')
+    user = User.query.filter_by(token=token).first()
+
+    if not user or user.role != 'landlord':
+        return jsonify({'message': 'Unauthorized'}), 401
+
+    data = request.get_json()
+    print("Property data received:", data)
+
+    new_property = Property(
+        title=data.get('title'),
+        location=data.get('location'),
+        price=data.get('price'),
+        description=data.get('description'),
+        landlord_id=user.id,
+        phone='',
+        bedrooms=0,
+        bathrooms=0,
+        image_file=None
+    )
+
+    db.session.add(new_property)
+    db.session.commit()
+
+    return jsonify({'message': 'Property posted successfully'}), 201
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
