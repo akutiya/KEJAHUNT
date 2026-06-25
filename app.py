@@ -345,19 +345,30 @@ def api_post_property():
     if not user or user.role != 'landlord':
         return jsonify({'message': 'Unauthorized'}), 401
 
-    data = request.get_json()
-    print("Property data received:", data)
+    title = request.form.get('title')
+    location = request.form.get('location')
+    price = request.form.get('price')
+    description = request.form.get('description')
+    property_type = request.form.get('property_type')
+
+    filename = None
+    if 'image' in request.files:
+        image = request.files['image']
+        if image.filename != '':
+            filename = str(uuid.uuid4()) + "_" + secure_filename(image.filename)
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
     new_property = Property(
-        title=data.get('title'),
-        location=data.get('location'),
-        price=data.get('price'),
-        description=data.get('description'),
+        title=title,
+        location=location,
+        price=price,
+        description=description,
+        property_type=property_type,
         landlord_id=user.id,
         phone='',
         bedrooms=0,
         bathrooms=0,
-        image_file=None
+        image_file=filename
     )
 
     db.session.add(new_property)
