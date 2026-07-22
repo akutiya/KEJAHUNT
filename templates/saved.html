@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% if favorite.property.image_file %}
+    <img src="{{ url_for('static', filename='uploads/' + favorite.property.image_file) }}"
+         width="100%"
+         style="border-radius:8px;">
+{% endif %}
+    <title>Saved Properties - KEJAHUNT</title>
+</head>
+<body>
+
+<h1>❤️ My Saved Properties</h1>
+
+<p>
+    <a href="/properties">← Back to Properties</a>
+</p>
+
+<hr>
+
+{% if favorites %}
+
+    {% for favorite in favorites %}
+
+        <div style="
+            border:1px solid #ccc;
+            padding:15px;
+            margin:15px;
+            border-radius:10px;
+            width:300px;
+        ">
+
+            <h2>{{ favorite.property.title }}</h2>
+
+            <p>📍 {{ favorite.property.location }}</p>
+
+            <p>💰 KES {{ favorite.property.price }}</p>
+
+            <a href="/property/{{ favorite.property.id }}">
+                <button>View Details</button>
+            </a>
+
+            <a href="/unsave/{{ favorite.property.id }}">
+                <button>❌ Remove</button>
+            </a>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <h3>No saved properties yet.</h3>
+
+{% endif %}
+
+</body>
+</html>

@@ -17,7 +17,7 @@ from werkzeug.security import (
     check_password_hash
 )
 
-from models import db, User, Property
+from models import db, User, Property, Favorite
 
 app = Flask(__name__)
 
@@ -239,6 +239,58 @@ def property_details(property_id):
         property=prop
     )
 
+@app.route('/save/<int:property_id>')
+@login_required
+def save_property(property_id):
+
+    property = Property.query.get_or_404(property_id)
+
+    existing = Favorite.query.filter_by(
+        user_id=current_user.id,
+        property_id=property.id
+    ).first()
+
+    if existing:
+        return redirect(url_for('properties'))
+
+    favorite = Favorite(
+        user_id=current_user.id,
+        property_id=property.id
+    )
+
+    db.session.add(favorite)
+    db.session.commit()
+
+    return redirect(url_for('properties'))
+
+@app.route('/saved')
+@login_required
+def saved_properties():
+
+    favorites = Favorite.query.filter_by(
+        user_id=current_user.id
+    ).all()
+
+    return render_template(
+        'saved.html',
+        favorites=favorites
+    )
+
+@app.route('/unsave/<int:property_id>')
+@login_required
+def unsave_property(property_id):
+
+    favorite = Favorite.query.filter_by(
+        user_id=current_user.id,
+        property_id=property_id
+    ).first()
+
+    if favorite:
+        db.session.delete(favorite)
+        db.session.commit()
+
+    return redirect(url_for('saved_properties'))
+
 
 # =========================
 # 📱 MOBILE API ROUTES
@@ -378,4 +430,4 @@ def api_post_property():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)

@@ -9,7 +9,13 @@
 
 <p>Find your next home in Kenya</p>
 
+<!-- Step 7: Navigation Link -->
+<p>
+    <a href="{{ url_for('saved_properties') }}">❤️ Saved Properties</a>
+</p>
+
 <hr>
+
 <form method="GET" action="/properties">
 
     <input type="text"
@@ -35,11 +41,13 @@
         vertical-align:top;
     ">
 
-        {% if p.image_url %}
-            <img src="{{ p.image_url }}" width="100%" style="border-radius:8px;">
-        {% else %}
-            <p><i>No image available</i></p>
-        {% endif %}
+        {% if p.image_file %}
+    <img src="{{ url_for('static', filename='uploads/' + p.image_file) }}"
+         width="100%"
+         style="border-radius:8px;">
+{% else %}
+    <p><i>No image available</i></p>
+{% endif %}
 
         <h2>{{ p.title }}</h2>
 
@@ -55,6 +63,11 @@
 
         <a href="/property/{{ p.id }}">
             <button>View Details</button>
+        </a>
+
+        <!-- Step 5: Save Button -->
+        <a href="{{ url_for('save_property', property_id=p.id) }}">
+            <button>❤️ Save</button>
         </a>
 
     </div>
