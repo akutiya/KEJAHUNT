@@ -1,55 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - KEJAHUNT</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:linear-gradient(135deg,#0f766e,#14532d);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .register-box{
+            width:420px;
+            background:white;
+            padding:40px;
+            border-radius:15px;
+            box-shadow:0 15px 35px rgba(0,0,0,.25);
+            animation:fadeIn .8s ease;
+        }
+
+        h2{
+            text-align:center;
+            color:#14532d;
+            margin-bottom:25px;
+        }
+
+        input,
+        select{
+            width:100%;
+            padding:12px;
+            margin:10px 0;
+            border:1px solid #ccc;
+            border-radius:8px;
+            font-size:15px;
+            transition:.3s;
+        }
+
+        input:focus,
+        select:focus{
+            outline:none;
+            border-color:#16a34a;
+            box-shadow:0 0 8px rgba(22,163,74,.3);
+        }
+
+        label{
+            font-weight:bold;
+            color:#444;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:20px;
+            border:none;
+            border-radius:8px;
+            background:#16a34a;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        button:hover{
+            background:#15803d;
+            transform:scale(1.03);
+        }
+
+        @keyframes fadeIn{
+
+            from{
+                opacity:0;
+                transform:translateY(20px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-<h2>Create Account</h2>
+<div class="register-box">
 
-<form method="POST">
+    <h2>Create Account</h2>
 
-    <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        required
-    >
+    <form method="POST">
 
-    <br><br>
+        <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            required
+        >
 
-    <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        required
-    >
+        <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+        >
 
-    <br><br>
+        <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Password"
+            required
+        >
 
-    <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        required
-    >
+        <label>Register as:</label>
 
-    <br><br>
+        <select name="role" required>
 
-    <label>Register as:</label>
+            <option value="user">House Hunter</option>
 
-    <select name="role" required>
-        <option value="user">House Hunter</option>
-        <option value="landlord">Landlord</option>
-    </select>
+            <option value="landlord">Landlord</option>
 
-    <br><br>
+        </select>
 
-    <button type="submit">
-        Register
-    </button>
+        <button type="submit">
+            Register
+        </button>
 
-</form>
+    </form>
+
+</div>
+
+<script>
+
+const password = document.getElementById("password");
+
+password.addEventListener("focus",function(){
+
+    this.style.background="#f9fafb";
+
+});
+
+password.addEventListener("blur",function(){
+
+    this.style.background="white";
+
+});
+
+</script>
 
 </body>
 </html>

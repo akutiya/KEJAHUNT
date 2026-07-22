@@ -1,41 +1,310 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Add Property</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Add Property - KEJAHUNT</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+}
+
+/* ================= NAVBAR ================= */
+
+nav{
+
+    background:#14532d;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 40px;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+
+}
+
+.logo{
+
+    font-size:28px;
+    font-weight:bold;
+
+}
+
+nav ul{
+
+    display:flex;
+    list-style:none;
+
+}
+
+nav ul li{
+
+    margin-left:25px;
+
+}
+
+nav ul li a{
+
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+
+}
+
+nav ul li a:hover{
+
+    color:#fde047;
+
+}
+
+/* ================= FORM ================= */
+
+.container{
+
+    width:90%;
+    max-width:700px;
+    margin:40px auto;
+
+}
+
+.form-card{
+
+    background:white;
+    padding:35px;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+    transition:.3s;
+
+}
+
+.form-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+h1{
+
+    color:#14532d;
+    margin-bottom:25px;
+
+}
+
+input,
+textarea{
+
+    width:100%;
+    padding:14px;
+    margin-bottom:18px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:16px;
+
+}
+
+textarea{
+
+    resize:vertical;
+    min-height:120px;
+
+}
+
+input[type=file]{
+
+    border:none;
+
+}
+
+button{
+
+    width:100%;
+    background:#16a34a;
+    color:white;
+    border:none;
+    padding:15px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:17px;
+    transition:.3s;
+
+}
+
+button:hover{
+
+    background:#15803d;
+
+}
+
+#preview{
+
+    display:none;
+    width:100%;
+    margin-top:10px;
+    border-radius:10px;
+    max-height:300px;
+    object-fit:cover;
+
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+nav{
+
+    flex-direction:column;
+
+}
+
+nav ul{
+
+    flex-direction:column;
+    margin-top:15px;
+    text-align:center;
+
+}
+
+nav ul li{
+
+    margin:10px 0;
+
+}
+
+}
+
+</style>
+
 </head>
+
 <body>
+
+<nav>
+
+<div class="logo">
+
+🏠 KEJAHUNT
+
+</div>
+
+<ul>
+
+<li>
+<a href="/landlord_dashboard">Dashboard</a>
+</li>
+
+<li>
+<a href="/my_properties">My Listings</a>
+</li>
+
+<li>
+<a href="/logout">Logout</a>
+</li>
+
+</ul>
+
+</nav>
+
+<div class="container">
+
+<div class="form-card">
 
 <h1>Add New Property</h1>
 
 <form method="POST" enctype="multipart/form-data">
 
-    <input type="text" name="title" placeholder="Title" required>
-    <br><br>
+<input
+type="text"
+name="title"
+placeholder="Title"
+required>
 
-    <textarea name="description" placeholder="Description" required></textarea>
-    <br><br>
+<textarea
+name="description"
+placeholder="Description"
+required></textarea>
 
-    <input type="number" name="price" placeholder="Price (KES)" required>
-    <br><br>
+<input
+type="number"
+name="price"
+placeholder="Price (KES)"
+required>
 
-    <input type="text" name="location" placeholder="Location" required>
-    <br><br>
+<input
+type="text"
+name="location"
+placeholder="Location"
+required>
 
-    <input type="number" name="bedrooms" placeholder="Bedrooms" required>
-    <br><br>
+<input
+type="number"
+name="bedrooms"
+placeholder="Bedrooms"
+required>
 
-    <input type="number" name="bathrooms" placeholder="Bathrooms" required>
-    <br><br>
+<input
+type="number"
+name="bathrooms"
+placeholder="Bathrooms"
+required>
 
-    <input type="text" name="phone" placeholder="Landlord Phone (e.g. 2547...)" required>
-    <br><br>
+<input
+type="text"
+name="phone"
+placeholder="Landlord Phone (e.g. 2547...)"
+required>
 
-    <input type="file" name="image" required>
-    <br><br>
+<input
+type="file"
+name="image"
+id="image"
+required>
 
-    <button type="submit">Save Property</button>
+<img id="preview">
+
+<button type="submit">
+
+Save Property
+
+</button>
 
 </form>
+
+</div>
+
+</div>
+
+<script>
+
+const image=document.getElementById("image");
+const preview=document.getElementById("preview");
+
+image.addEventListener("change",function(){
+
+const file=this.files[0];
+
+if(file){
+
+preview.src=URL.createObjectURL(file);
+
+preview.style.display="block";
+
+}
+
+});
+
+</script>
 
 </body>
 </html>

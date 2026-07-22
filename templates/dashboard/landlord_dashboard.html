@@ -1,29 +1,368 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Landlord Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Landlord Dashboard - KEJAHUNT</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+}
+
+/* ================= NAVBAR ================= */
+
+nav{
+
+    background:#14532d;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 40px;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+
+}
+
+.logo{
+
+    font-size:28px;
+    font-weight:bold;
+
+}
+
+nav ul{
+
+    display:flex;
+    list-style:none;
+
+}
+
+nav ul li{
+
+    margin-left:25px;
+
+}
+
+nav ul li a{
+
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+
+}
+
+nav ul li a:hover{
+
+    color:#fde047;
+
+}
+
+/* ================= CONTENT ================= */
+
+.container{
+
+    width:90%;
+    max-width:1100px;
+    margin:40px auto;
+
+}
+
+.dashboard-title{
+
+    color:#14532d;
+    margin-bottom:10px;
+
+}
+
+.welcome{
+
+    color:#333;
+    margin-bottom:5px;
+
+}
+
+.role{
+
+    color:#666;
+    margin-bottom:30px;
+
+}
+
+/* ================= CARDS ================= */
+
+.cards{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:25px;
+
+}
+
+.card{
+
+    flex:1;
+    min-width:280px;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.card h2{
+
+    color:#14532d;
+    margin-bottom:15px;
+
+}
+
+.card p{
+
+    color:#555;
+    margin-bottom:20px;
+
+}
+
+.button{
+
+    display:inline-block;
+    text-decoration:none;
+    color:white;
+    padding:12px 20px;
+    border-radius:8px;
+    transition:.3s;
+
+}
+
+.add{
+
+    background:#16a34a;
+
+}
+
+.add:hover{
+
+    background:#15803d;
+
+}
+
+.listings{
+
+    background:#2563eb;
+
+}
+
+.listings:hover{
+
+    background:#1d4ed8;
+
+}
+
+.logout{
+
+    background:#dc2626;
+
+}
+
+.logout:hover{
+
+    background:#b91c1c;
+
+}
+
+.logout-box{
+
+    margin-top:30px;
+
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+nav{
+
+    flex-direction:column;
+
+}
+
+nav ul{
+
+    flex-direction:column;
+    margin-top:15px;
+    text-align:center;
+
+}
+
+nav ul li{
+
+    margin:10px 0;
+
+}
+
+.cards{
+
+    flex-direction:column;
+
+}
+
+}
+
+</style>
+
 </head>
+
 <body>
 
-<h1>Landlord Dashboard</h1>
+<nav>
 
-<h3>Welcome {{ user.username }}</h3>
+<div class="logo">
 
-<p>Role: {{ user.role }}</p>
+🏠 KEJAHUNT
 
-<hr>
+</div>
 
-<h2>Manage Properties</h2>
+<ul>
 
-<a href="/add_property">➕ Add New Property</a>
+<li>
+<a href="/">Home</a>
+</li>
 
-<br><br>
+<li>
+<a href="/properties">Properties</a>
+</li>
 
-<a href="/my_properties">🏠 My Listings</a>
+<li>
+<a href="/my_properties">My Listings</a>
+</li>
 
-<br><br>
-
+<li>
 <a href="/logout">Logout</a>
+</li>
+
+</ul>
+
+</nav>
+
+<div class="container">
+
+<h1 class="dashboard-title">
+
+Landlord Dashboard
+
+</h1>
+
+<h2 class="welcome">
+
+Welcome, {{ user.username }} 👋
+
+</h2>
+
+<p class="role">
+
+Role: {{ user.role }}
+
+</p>
+
+<div class="cards">
+
+<div class="card">
+
+<h2>
+
+➕ Add Property
+
+</h2>
+
+<p>
+
+Post a new rental property for house hunters to discover.
+
+</p>
+
+<a class="button add" href="/add_property">
+
+Add New Property
+
+</a>
+
+</div>
+
+<div class="card">
+
+<h2>
+
+🏠 My Listings
+
+</h2>
+
+<p>
+
+Manage, update and view all the properties you have listed.
+
+</p>
+
+<a class="button listings" href="/my_properties">
+
+View My Listings
+
+</a>
+
+</div>
+
+</div>
+
+<div class="logout-box">
+
+<a class="button logout" href="/logout">
+
+Logout
+
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+const cards=document.querySelectorAll(".card");
+
+cards.forEach(function(card){
+
+card.addEventListener("mouseenter",function(){
+
+this.style.boxShadow="0 18px 35px rgba(0,0,0,.25)";
+
+});
+
+card.addEventListener("mouseleave",function(){
+
+this.style.boxShadow="0 8px 20px rgba(0,0,0,.12)";
+
+});
+
+});
+
+</script>
 
 </body>
 </html>

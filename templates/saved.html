@@ -1,58 +1,414 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    {% if favorite.property.image_file %}
-    <img src="{{ url_for('static', filename='uploads/' + favorite.property.image_file) }}"
-         width="100%"
-         style="border-radius:8px;">
-{% endif %}
-    <title>Saved Properties - KEJAHUNT</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Saved Properties - KEJAHUNT</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+}
+
+/* ================= NAVBAR ================= */
+
+nav{
+
+    background:#14532d;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 40px;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+
+}
+
+.logo{
+
+    font-size:28px;
+    font-weight:bold;
+
+}
+
+nav ul{
+
+    display:flex;
+    list-style:none;
+
+}
+
+nav ul li{
+
+    margin-left:25px;
+
+}
+
+nav ul li a{
+
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+
+}
+
+nav ul li a:hover{
+
+    color:#fde047;
+
+}
+
+/* ================= PAGE ================= */
+
+.container{
+
+    width:90%;
+    margin:40px auto;
+
+}
+
+.top{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+
+}
+
+h1{
+
+    color:#14532d;
+
+}
+
+.back-btn{
+
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    padding:12px 20px;
+    border-radius:8px;
+    transition:.3s;
+
+}
+
+.back-btn:hover{
+
+    background:#1d4ed8;
+
+}
+
+/* ================= CARDS ================= */
+
+.cards{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:25px;
+
+}
+
+.card{
+
+    width:320px;
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.card img{
+
+    width:100%;
+    height:220px;
+    object-fit:cover;
+
+}
+
+.no-image{
+
+    height:220px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#eeeeee;
+    color:#777;
+
+}
+
+.info{
+
+    padding:20px;
+
+}
+
+.info h2{
+
+    color:#14532d;
+    margin-bottom:10px;
+
+}
+
+.info p{
+
+    margin:8px 0;
+    color:#555;
+
+}
+
+.buttons{
+
+    display:flex;
+    justify-content:space-between;
+    margin-top:20px;
+
+}
+
+.details{
+
+    background:#2563eb;
+    color:white;
+}
+
+.details:hover{
+
+    background:#1d4ed8;
+
+}
+
+.remove{
+
+    background:#dc2626;
+    color:white;
+
+}
+
+.remove:hover{
+
+    background:#b91c1c;
+
+}
+
+button{
+
+    border:none;
+    padding:12px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.3s;
+
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+nav{
+
+    flex-direction:column;
+
+}
+
+nav ul{
+
+    flex-direction:column;
+    margin-top:15px;
+    text-align:center;
+
+}
+
+nav ul li{
+
+    margin:10px 0;
+
+}
+
+.cards{
+
+    justify-content:center;
+
+}
+
+}
+
+</style>
+
 </head>
+
 <body>
 
-<h1>❤️ My Saved Properties</h1>
+<nav>
 
-<p>
-    <a href="/properties">← Back to Properties</a>
-</p>
+<div class="logo">
 
-<hr>
+🏠 KEJAHUNT
+
+</div>
+
+<ul>
+
+<li>
+<a href="/properties">Properties</a>
+</li>
+
+<li>
+<a href="{{ url_for('saved_properties') }}">Saved</a>
+</li>
+
+<li>
+<a href="/logout">Logout</a>
+</li>
+
+</ul>
+
+</nav>
+
+<div class="container">
+
+<div class="top">
+
+<h1>
+
+❤️ My Saved Properties
+
+</h1>
+
+<a class="back-btn" href="/properties">
+
+← Back to Properties
+
+</a>
+
+</div>
+
+<div class="cards">
 
 {% if favorites %}
 
-    {% for favorite in favorites %}
+{% for favorite in favorites %}
 
-        <div style="
-            border:1px solid #ccc;
-            padding:15px;
-            margin:15px;
-            border-radius:10px;
-            width:300px;
-        ">
+<div class="card">
 
-            <h2>{{ favorite.property.title }}</h2>
+{% if favorite.property.image_file %}
 
-            <p>📍 {{ favorite.property.location }}</p>
-
-            <p>💰 KES {{ favorite.property.price }}</p>
-
-            <a href="/property/{{ favorite.property.id }}">
-                <button>View Details</button>
-            </a>
-
-            <a href="/unsave/{{ favorite.property.id }}">
-                <button>❌ Remove</button>
-            </a>
-
-        </div>
-
-    {% endfor %}
+<img src="{{ url_for('static', filename='uploads/' + favorite.property.image_file) }}">
 
 {% else %}
 
-    <h3>No saved properties yet.</h3>
+<div class="no-image">
+
+No Image Available
+
+</div>
 
 {% endif %}
+
+<div class="info">
+
+<h2>
+
+{{ favorite.property.title }}
+
+</h2>
+
+<p>
+
+📍 {{ favorite.property.location }}
+
+</p>
+
+<p>
+
+💰 KES {{ favorite.property.price }}
+
+</p>
+
+<div class="buttons">
+
+<a href="/property/{{ favorite.property.id }}">
+
+<button class="details">
+
+View Details
+
+</button>
+
+</a>
+
+<a href="/unsave/{{ favorite.property.id }}">
+
+<button class="remove">
+
+❌ Remove
+
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<h2>
+
+You haven't saved any properties yet.
+
+</h2>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<script>
+
+const cards=document.querySelectorAll(".card");
+
+cards.forEach(function(card){
+
+card.addEventListener("mouseenter",function(){
+
+this.style.boxShadow="0 18px 35px rgba(0,0,0,.25)";
+
+});
+
+card.addEventListener("mouseleave",function(){
+
+this.style.boxShadow="0 8px 20px rgba(0,0,0,.12)";
+
+});
+
+});
+
+</script>
 
 </body>
 </html>

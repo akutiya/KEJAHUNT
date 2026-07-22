@@ -1,37 +1,135 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - KEJAHUNT</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:linear-gradient(135deg,#0f766e,#14532d);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .login-box{
+            background:white;
+            padding:40px;
+            width:380px;
+            border-radius:15px;
+            text-align:center;
+            box-shadow:0 15px 35px rgba(0,0,0,.25);
+            animation:fadeIn .8s ease;
+        }
+
+        h2{
+            color:#14532d;
+            margin-bottom:25px;
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            margin:10px 0;
+            border:1px solid #ccc;
+            border-radius:8px;
+            font-size:15px;
+            transition:.3s;
+        }
+
+        input:focus{
+            outline:none;
+            border-color:#16a34a;
+            box-shadow:0 0 8px rgba(22,163,74,.3);
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:15px;
+            border:none;
+            border-radius:8px;
+            background:#2563eb;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        button:hover{
+            background:#1d4ed8;
+            transform:scale(1.03);
+        }
+
+        @keyframes fadeIn{
+            from{
+                opacity:0;
+                transform:translateY(20px);
+            }
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-<h2>Login</h2>
+<div class="login-box">
 
-<form method="POST">
+    <h2>Login</h2>
 
-    <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        required
-    >
+    <form method="POST">
 
-    <br><br>
+        <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+        >
 
-    <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        required
-    >
+        <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Password"
+            required
+        >
 
-    <br><br>
+        <button type="submit">
+            Login
+        </button>
 
-    <button type="submit">
-        Login
-    </button>
+    </form>
 
-</form>
+</div>
+
+<script>
+
+const password = document.getElementById("password");
+
+password.addEventListener("focus",function(){
+    this.style.background="#f9fafb";
+});
+
+password.addEventListener("blur",function(){
+    this.style.background="white";
+});
+
+</script>
 
 </body>
 </html>

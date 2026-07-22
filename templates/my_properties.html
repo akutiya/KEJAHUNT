@@ -1,35 +1,337 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Properties</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Properties - KEJAHUNT</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+}
+
+/* ================= NAVBAR ================= */
+
+nav{
+
+    background:#14532d;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 40px;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+
+}
+
+.logo{
+
+    font-size:28px;
+    font-weight:bold;
+
+}
+
+nav ul{
+
+    display:flex;
+    list-style:none;
+
+}
+
+nav ul li{
+
+    margin-left:25px;
+
+}
+
+nav ul li a{
+
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+
+}
+
+nav ul li a:hover{
+
+    color:#fde047;
+
+}
+
+/* ================= PAGE ================= */
+
+.container{
+
+    width:90%;
+    margin:40px auto;
+
+}
+
+.top{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+
+}
+
+h1{
+
+    color:#14532d;
+
+}
+
+.add-btn{
+
+    background:#16a34a;
+    color:white;
+    text-decoration:none;
+    padding:12px 20px;
+    border-radius:8px;
+    transition:.3s;
+
+}
+
+.add-btn:hover{
+
+    background:#15803d;
+
+}
+
+/* ================= PROPERTY CARDS ================= */
+
+.cards{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:25px;
+
+}
+
+.card{
+
+    width:320px;
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.card img{
+
+    width:100%;
+    height:220px;
+    object-fit:cover;
+
+}
+
+.no-image{
+
+    height:220px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#eeeeee;
+    color:#777;
+
+}
+
+.info{
+
+    padding:20px;
+
+}
+
+.info h2{
+
+    color:#14532d;
+    margin-bottom:12px;
+
+}
+
+.info p{
+
+    margin:8px 0;
+    color:#555;
+
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+nav{
+
+    flex-direction:column;
+
+}
+
+nav ul{
+
+    flex-direction:column;
+    margin-top:15px;
+    text-align:center;
+
+}
+
+nav ul li{
+
+    margin:10px 0;
+
+}
+
+.cards{
+
+    justify-content:center;
+
+}
+
+}
+
+</style>
+
 </head>
+
 <body>
 
-<h1>🏠 My Listings</h1>
+<nav>
 
-<a href="/add_property">➕ Add New Property</a>
+<div class="logo">
 
-<hr>
+🏠 KEJAHUNT
+
+</div>
+
+<ul>
+
+<li>
+<a href="/landlord_dashboard">Dashboard</a>
+</li>
+
+<li>
+<a href="/add_property">Add Property</a>
+</li>
+
+<li>
+<a href="/properties">Browse Properties</a>
+</li>
+
+<li>
+<a href="/logout">Logout</a>
+</li>
+
+</ul>
+
+</nav>
+
+<div class="container">
+
+<div class="top">
+
+<h1>
+
+🏠 My Listings
+
+</h1>
+
+<a class="add-btn" href="/add_property">
+
+➕ Add New Property
+
+</a>
+
+</div>
+
+<div class="cards">
 
 {% for p in properties %}
 
-    <div style="border:1px solid black; padding:10px; margin:10px;">
+<div class="card">
 
-        <h2>{{ p.title }}</h2>
+{% if p.image_file %}
 
-        <p>{{ p.description }}</p>
+<img src="{{ url_for('static', filename='uploads/' + p.image_file) }}">
 
-        <p><b>Price:</b> KES {{ p.price }}</p>
+{% else %}
 
-        <p><b>Location:</b> {{ p.location }}</p>
+<div class="no-image">
 
-        <p><b>Bedrooms:</b> {{ p.bedrooms }}</p>
+No Image Available
 
-        <p><b>Bathrooms:</b> {{ p.bathrooms }}</p>
+</div>
 
-    </div>
+{% endif %}
+
+<div class="info">
+
+<h2>{{ p.title }}</h2>
+
+<p>{{ p.description }}</p>
+
+<p><b>💰 Price:</b> KES {{ p.price }}</p>
+
+<p><b>📍 Location:</b> {{ p.location }}</p>
+
+<p><b>🛏 Bedrooms:</b> {{ p.bedrooms }}</p>
+
+<p><b>🛁 Bathrooms:</b> {{ p.bathrooms }}</p>
+
+</div>
+
+</div>
+
+{% else %}
+
+<h2>You haven't listed any properties yet.</h2>
 
 {% endfor %}
+
+</div>
+
+</div>
+
+<script>
+
+const cards=document.querySelectorAll(".card");
+
+cards.forEach(function(card){
+
+card.addEventListener("mouseenter",function(){
+
+this.style.boxShadow="0 18px 35px rgba(0,0,0,.25)";
+
+});
+
+card.addEventListener("mouseleave",function(){
+
+this.style.boxShadow="0 8px 20px rgba(0,0,0,.12)";
+
+});
+
+});
+
+</script>
 
 </body>
 </html>

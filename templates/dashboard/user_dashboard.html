@@ -1,25 +1,245 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>User Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>User Dashboard - KEJAHUNT</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+}
+
+/* ================= NAVBAR ================= */
+
+nav{
+    background:#14532d;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 40px;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+}
+
+nav ul{
+    display:flex;
+    list-style:none;
+}
+
+nav ul li{
+    margin-left:25px;
+}
+
+nav ul li a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+}
+
+nav ul li a:hover{
+    color:#fde047;
+}
+
+/* ================= CONTENT ================= */
+
+.container{
+    width:90%;
+    max-width:1100px;
+    margin:40px auto;
+}
+
+.dashboard-title{
+    color:#14532d;
+    margin-bottom:10px;
+}
+
+.welcome{
+    color:#333;
+    margin-bottom:5px;
+}
+
+.role{
+    color:#666;
+    margin-bottom:30px;
+}
+
+/* ================= DASHBOARD CARD ================= */
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:30px;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card h2{
+    color:#14532d;
+    margin-bottom:20px;
+}
+
+.card p{
+    color:#555;
+    margin-bottom:20px;
+}
+
+.button{
+    display:inline-block;
+    padding:12px 20px;
+    margin-right:10px;
+    text-decoration:none;
+    color:white;
+    border-radius:8px;
+    transition:.3s;
+}
+
+.properties{
+    background:#2563eb;
+}
+
+.properties:hover{
+    background:#1d4ed8;
+}
+
+.logout{
+    background:#dc2626;
+}
+
+.logout:hover{
+    background:#b91c1c;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+    nav{
+        flex-direction:column;
+    }
+
+    nav ul{
+        margin-top:15px;
+        flex-direction:column;
+        text-align:center;
+    }
+
+    nav ul li{
+        margin:10px 0;
+    }
+
+}
+
+</style>
+
 </head>
+
 <body>
 
-<h1>House Hunter Dashboard</h1>
+<nav>
 
-<h3>Welcome {{ user.username }}</h3>
+<div class="logo">
+🏠 KEJAHUNT
+</div>
 
-<p>Role: {{ user.role }}</p>
+<ul>
 
-<hr>
+<li>
+<a href="/">Home</a>
+</li>
+
+<li>
+<a href="/properties">Properties</a>
+</li>
+
+<li>
+<a href="{{ url_for('saved_properties') }}">Saved</a>
+</li>
+
+<li>
+<a href="/logout">Logout</a>
+</li>
+
+</ul>
+
+</nav>
+
+
+
+
+<div class="container">
+
+<h1 class="dashboard-title">
+House Hunter Dashboard
+</h1>
+
+<h2 class="welcome">
+Welcome, {{ user.username }} 👋
+</h2>
+
+<p class="role">
+Role: {{ user.role }}
+</p>
+
+
+<div class="card">
+
+
 
 <h2>Browse Houses</h2>
 
-<a href="/properties">View Available Houses</a>
+<p>
+Search and save houses from anywhere in Kenya.
+</p>
 
-<br><br>
+<a class="button properties" href="/properties">
+View Available Houses
+</a>
 
-<a href="/logout">Logout</a>
+<a class="button logout" href="/logout">
+Logout
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+const card = document.querySelector(".card");
+
+card.addEventListener("mouseenter",function(){
+
+    this.style.boxShadow="0 18px 35px rgba(0,0,0,.25)";
+
+});
+
+card.addEventListener("mouseleave",function(){
+
+    this.style.boxShadow="0 8px 20px rgba(0,0,0,.12)";
+
+});
+
+</script>
 
 </body>
 </html>
