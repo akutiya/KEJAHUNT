@@ -62,3 +62,45 @@ class Favorite(db.Model):
 
     user = db.relationship('User', backref='favorites')
     property = db.relationship('Property', backref='favorites')
+
+
+# =====================
+# MESSAGE MODEL
+# =====================
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    sender_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id'),
+        nullable=False
+    )
+
+    receiver_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id'),
+        nullable=False
+    )
+
+    property_id = db.Column(
+        db.Integer,
+        db.ForeignKey('property.id'),
+        nullable=False
+    )
+
+    message = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    sender = db.relationship(
+        'User',
+        foreign_keys=[sender_id]
+    )
+
+    receiver = db.relationship(
+        'User',
+        foreign_keys=[receiver_id]
+    )
+
+    property = db.relationship('Property')

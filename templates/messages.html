@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>User Dashboard - KEJAHUNT</title>
+<title>Landlord Inbox - KEJAHUNT</title>
 
 <style>
 
@@ -22,6 +22,7 @@ body{
 /* ================= NAVBAR ================= */
 
 nav{
+
     background:#14532d;
     color:white;
     display:flex;
@@ -29,140 +30,146 @@ nav{
     align-items:center;
     padding:18px 40px;
     box-shadow:0 4px 12px rgba(0,0,0,.15);
+
 }
 
 .logo{
+
     font-size:28px;
     font-weight:bold;
+
 }
 
 nav ul{
+
     display:flex;
     list-style:none;
+
 }
 
 nav ul li{
+
     margin-left:25px;
+
 }
 
 nav ul li a{
+
     color:white;
     text-decoration:none;
     font-weight:bold;
     transition:.3s;
+
 }
 
 nav ul li a:hover{
+
     color:#fde047;
+
 }
 
 /* ================= CONTENT ================= */
 
 .container{
+
     width:90%;
-    max-width:1100px;
+    max-width:1000px;
     margin:40px auto;
+
 }
 
-.dashboard-title{
+.title{
+
     color:#14532d;
-    margin-bottom:10px;
-}
-
-.welcome{
-    color:#333;
-    margin-bottom:5px;
-}
-
-.role{
-    color:#666;
     margin-bottom:30px;
+
 }
 
-/* ================= DASHBOARD CARD ================= */
+/* ================= MESSAGE CARD ================= */
 
-.card{
+.message{
+
     background:white;
+    padding:25px;
+    margin-bottom:25px;
     border-radius:15px;
-    padding:30px;
     box-shadow:0 8px 20px rgba(0,0,0,.12);
     transition:.3s;
+
 }
 
-.card:hover{
-    transform:translateY(-8px);
+.message:hover{
+
+    transform:translateY(-6px);
+
 }
 
-.card h2{
+.message h3{
+
     color:#14532d;
-    margin-bottom:20px;
+    margin-bottom:15px;
+
 }
 
-.card p{
+.message p{
+
     color:#555;
-    margin-bottom:20px;
+    margin:10px 0;
+
 }
 
-.button{
+.reply{
+
     display:inline-block;
-    padding:12px 20px;
-    margin-right:10px;
-    margin-bottom:10px;
+    margin-top:15px;
     text-decoration:none;
+    background:#2563eb;
     color:white;
+    padding:12px 22px;
     border-radius:8px;
     transition:.3s;
+
 }
 
-.properties{
-    background:#2563eb;
-}
+.reply:hover{
 
-.properties:hover{
     background:#1d4ed8;
+
 }
 
-.saved{
-    background:#16a34a;
-}
+/* ================= EMPTY ================= */
 
-.saved:hover{
-    background:#15803d;
-}
+.empty{
 
-.inbox{
-    background:#9333ea;
-}
+    text-align:center;
+    color:#777;
+    font-size:20px;
+    margin-top:80px;
 
-.inbox:hover{
-    background:#7e22ce;
-}
-
-.logout{
-    background:#dc2626;
-}
-
-.logout:hover{
-    background:#b91c1c;
 }
 
 /* ================= RESPONSIVE ================= */
 
 @media(max-width:768px){
 
-    nav{
-        flex-direction:column;
-    }
+nav{
 
-    nav ul{
-        margin-top:15px;
-        flex-direction:column;
-        text-align:center;
-    }
+    flex-direction:column;
 
-    nav ul li{
-        margin:10px 0;
-    }
+}
+
+nav ul{
+
+    flex-direction:column;
+    margin-top:15px;
+
+}
+
+nav ul li{
+
+    margin:10px 0;
+
+}
 
 }
 
@@ -175,7 +182,9 @@ nav ul li a:hover{
 <nav>
 
 <div class="logo">
+
 🏠 KEJAHUNT
+
 </div>
 
 <ul>
@@ -185,15 +194,11 @@ nav ul li a:hover{
 </li>
 
 <li>
-<a href="/properties">Properties</a>
+<a href="/landlord_dashboard">Dashboard</a>
 </li>
 
 <li>
-<a href="{{ url_for('saved_properties') }}">Saved</a>
-</li>
-
-<li>
-<a href="{{ url_for('inbox') }}">Inbox</a>
+<a href="/my_properties">My Listings</a>
 </li>
 
 <li>
@@ -206,55 +211,73 @@ nav ul li a:hover{
 
 <div class="container">
 
-<h1 class="dashboard-title">
-House Hunter Dashboard
+<h1 class="title">
+
+📥 Landlord Inbox
+
 </h1>
 
-<h2 class="welcome">
-Welcome, {{ user.username }} 👋
-</h2>
+{% for m in messages %}
 
-<p class="role">
-Role: {{ user.role }}
-</p>
+<div class="message">
 
-<div class="card">
+<h3>
 
-<h2>Browse Houses</h2>
+👤 {{ m.sender.username }}
+
+</h3>
 
 <p>
-Search and save houses from anywhere in Kenya.
+
+<b>Property:</b>
+
+{{ m.property.title }}
+
 </p>
 
-<a class="button properties" href="/properties">
-View Available Houses
-</a>
+<p>
 
-<a class="button saved" href="{{ url_for('saved_properties') }}">
-❤️ Saved Properties
-</a>
+{{ m.message }}
 
-<a class="button inbox"href="{{ url_for('my_messages') }}">
-    My Messages
+</p>
+
+<a class="reply" href="/reply/{{ m.id }}">
+
+Reply
+
 </a>
 
 </div>
+
+{% else %}
+
+<div class="empty">
+
+📭 No messages yet.
+
+</div>
+
+{% endfor %}
 
 </div>
 
 <script>
 
-const card = document.querySelector(".card");
+const cards=document.querySelectorAll(".message");
+
+cards.forEach(function(card){
 
 card.addEventListener("mouseenter",function(){
 
-    this.style.boxShadow="0 18px 35px rgba(0,0,0,.25)";
+this.style.boxShadow="0 18px 35px rgba(0,0,0,.25)";
 
 });
 
 card.addEventListener("mouseleave",function(){
 
-    this.style.boxShadow="0 8px 20px rgba(0,0,0,.12)";
+this.style.boxShadow="0 8px 20px rgba(0,0,0,.12)";
+
+});
 
 });
 

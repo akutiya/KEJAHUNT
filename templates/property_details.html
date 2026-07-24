@@ -339,6 +339,28 @@ Chat on WhatsApp
 
 </a>
 
+<hr>
+
+<h2>Send Message</h2>
+
+<form action="{{ url_for('send_message', property_id=property.id) }}"
+      method="POST">
+
+<textarea
+name="message"
+placeholder="Ask if this house is still available..."
+required></textarea>
+
+<br><br>
+
+<button type="submit">
+
+Send Message
+
+</button>
+
+</form>
+
 {% else %}
 
 <p style="margin-top:15px; color:#777;">

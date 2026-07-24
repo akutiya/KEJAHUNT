@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reply Message - KEJAHUNT</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    background:#f4f7fb;
+
+}
+
+/* ================= NAVBAR ================= */
+
+nav{
+
+    background:#14532d;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 40px;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+
+}
+
+.logo{
+
+    font-size:28px;
+    font-weight:bold;
+
+}
+
+nav ul{
+
+    display:flex;
+    list-style:none;
+
+}
+
+nav ul li{
+
+    margin-left:25px;
+
+}
+
+nav ul li a{
+
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+
+}
+
+nav ul li a:hover{
+
+    color:#fde047;
+
+}
+
+/* ================= CONTENT ================= */
+
+.container{
+
+    width:90%;
+    max-width:800px;
+    margin:50px auto;
+
+}
+
+.card{
+
+    background:white;
+    border-radius:15px;
+    padding:30px;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+}
+
+h2{
+
+    color:#14532d;
+    margin-bottom:20px;
+
+}
+
+.received{
+
+    background:#f3f4f6;
+    border-left:5px solid #16a34a;
+    padding:20px;
+    border-radius:10px;
+    color:#444;
+    margin-bottom:25px;
+
+}
+
+textarea{
+
+    width:100%;
+    height:180px;
+    resize:none;
+    border:1px solid #ccc;
+    border-radius:10px;
+    padding:15px;
+    font-size:16px;
+    outline:none;
+    transition:.3s;
+
+}
+
+textarea:focus{
+
+    border-color:#2563eb;
+    box-shadow:0 0 8px rgba(37,99,235,.25);
+
+}
+
+button{
+
+    margin-top:20px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:14px 25px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.3s;
+
+}
+
+button:hover{
+
+    background:#1d4ed8;
+
+}
+
+.counter{
+
+    text-align:right;
+    margin-top:8px;
+    color:#666;
+    font-size:14px;
+
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+nav{
+
+    flex-direction:column;
+
+}
+
+nav ul{
+
+    flex-direction:column;
+    margin-top:15px;
+
+}
+
+nav ul li{
+
+    margin:10px 0;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+
+<div class="logo">
+
+🏠 KEJAHUNT
+
+</div>
+
+<ul>
+
+<li>
+<a href="/landlord_dashboard">Dashboard</a>
+</li>
+
+<li>
+<a href="/messages">Inbox</a>
+</li>
+
+<li>
+<a href="/logout">Logout</a>
+</li>
+
+</ul>
+
+</nav>
+
+<div class="container">
+
+<div class="card">
+
+<h2>
+
+Reply to {{ message.sender.username }}
+
+</h2>
+
+<div class="received">
+
+{{ message.message }}
+
+</div>
+
+<form method="POST">
+
+<textarea
+name="message"
+id="replyBox"
+placeholder="Type your reply here..."
+required></textarea>
+
+<div class="counter">
+
+<span id="count">0</span> characters
+
+</div>
+
+<button>
+
+Send Reply
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+<script>
+
+const box=document.getElementById("replyBox");
+const count=document.getElementById("count");
+
+box.addEventListener("input",function(){
+
+count.innerText=this.value.length;
+
+});
+
+</script>
+
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Landlord Dashboard - KEJAHUNT</title>
+<title>My Messages - KEJAHUNT</title>
 
 <style>
 
@@ -73,136 +73,80 @@ nav ul li a:hover{
 .container{
 
     width:90%;
-    max-width:1100px;
+    max-width:1000px;
     margin:40px auto;
 
 }
 
-.dashboard-title{
+.title{
 
     color:#14532d;
-    margin-bottom:10px;
-
-}
-
-.welcome{
-
-    color:#333;
-    margin-bottom:5px;
-
-}
-
-.role{
-
-    color:#666;
     margin-bottom:30px;
 
 }
 
-/* ================= CARDS ================= */
+/* ================= MESSAGE CARD ================= */
 
-.cards{
+.message{
 
-    display:flex;
-    flex-wrap:wrap;
-    gap:25px;
-
-}
-
-.card{
-
-    flex:1;
-    min-width:280px;
     background:white;
-    padding:30px;
+    padding:25px;
+    margin-bottom:25px;
     border-radius:15px;
     box-shadow:0 8px 20px rgba(0,0,0,.12);
     transition:.3s;
 
 }
 
-.card:hover{
+.message:hover{
 
-    transform:translateY(-8px);
+    transform:translateY(-6px);
 
 }
 
-.card h2{
+.message h3{
 
     color:#14532d;
     margin-bottom:15px;
 
 }
 
-.card p{
+.message p{
 
     color:#555;
-    margin-bottom:20px;
+    margin:10px 0;
 
 }
 
-.button{
+/* ================= REPLY BUTTON ================= */
+
+.reply{
 
     display:inline-block;
+    margin-top:15px;
     text-decoration:none;
+    background:#2563eb;
     color:white;
-    padding:12px 20px;
+    padding:12px 22px;
     border-radius:8px;
     transition:.3s;
 
 }
 
-.add{
-
-    background:#16a34a;
-
-}
-
-.add:hover{
-
-    background:#15803d;
-
-}
-
-.listings{
-
-    background:#2563eb;
-
-}
-
-.listings:hover{
+.reply:hover{
 
     background:#1d4ed8;
 
 }
 
-.messages{
+/* ================= EMPTY ================= */
 
-    background:#9333ea;
+.empty{
 
-}
-
-.messages:hover{
-
-    background:#7e22ce;
-
-}
-
-.logout{
-
-    background:#dc2626;
-
-}
-
-.logout:hover{
-
-    background:#b91c1c;
-
-}
-
-.logout-box{
-
-    margin-top:30px;
+    text-align:center;
+    color:#777;
+    font-size:20px;
+    margin-top:80px;
 
 }
 
@@ -220,19 +164,12 @@ nav ul{
 
     flex-direction:column;
     margin-top:15px;
-    text-align:center;
 
 }
 
 nav ul li{
 
     margin:10px 0;
-
-}
-
-.cards{
-
-    flex-direction:column;
 
 }
 
@@ -259,15 +196,15 @@ nav ul li{
 </li>
 
 <li>
+<a href="/user_dashboard">Dashboard</a>
+</li>
+
+<li>
 <a href="/properties">Properties</a>
 </li>
 
 <li>
-<a href="/my_properties">My Listings</a>
-</li>
-
-<li>
-<a href="/messages">Messages</a>
+<a href="{{ url_for('saved_properties') }}">Saved</a>
 </li>
 
 <li>
@@ -280,109 +217,59 @@ nav ul li{
 
 <div class="container">
 
-<h1 class="dashboard-title">
+<h1 class="title">
 
-Landlord Dashboard
+💬 My Messages
 
 </h1>
 
-<h2 class="welcome">
+{% for m in messages %}
 
-Welcome, {{ user.username }} 👋
+<div class="message">
 
-</h2>
+<h3>
 
-<p class="role">
+👤 {{ m.sender.username }}
 
-Role: {{ user.role }}
-
-</p>
-
-<div class="cards">
-
-<div class="card">
-
-<h2>
-
-➕ Add Property
-
-</h2>
+</h3>
 
 <p>
 
-Post a new rental property for house hunters to discover.
+<b>Property:</b>
+
+{{ m.property.title }}
 
 </p>
-
-<a class="button add" href="/add_property">
-
-Add New Property
-
-</a>
-
-</div>
-
-<div class="card">
-
-<h2>
-
-🏠 My Listings
-
-</h2>
 
 <p>
 
-Manage, update and view all the properties you have listed.
+{{ m.message }}
 
 </p>
 
-<a class="button listings" href="/my_properties">
+<a class="reply" href="{{ url_for('reply', id=m.id) }}">
 
-View My Listings
-
-</a>
-
-</div>
-
-<div class="card">
-
-<h2>
-
-💬 Inbox
-
-</h2>
-
-<p>
-
-View messages from house hunters and reply to property inquiries.
-
-</p>
-
-<a class="button messages" href="/messages">
-
-Open Inbox
+Reply
 
 </a>
 
 </div>
 
-</div>
+{% else %}
 
-<div class="logout-box">
+<div class="empty">
 
-<a class="button logout" href="/logout">
-
-Logout
-
-</a>
+📭 You have no messages yet.
 
 </div>
+
+{% endfor %}
 
 </div>
 
 <script>
 
-const cards=document.querySelectorAll(".card");
+const cards=document.querySelectorAll(".message");
 
 cards.forEach(function(card){
 

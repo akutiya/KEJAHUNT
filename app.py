@@ -17,7 +17,7 @@ from werkzeug.security import (
     check_password_hash
 )
 
-from models import db, User, Property, Favorite
+from models import db, User, Property, Favorite, Message
 
 app = Flask(__name__)
 
@@ -290,6 +290,104 @@ def unsave_property(property_id):
         db.session.commit()
 
     return redirect(url_for('saved_properties'))
+
+@app.route("/message/<int:property_id>", methods=["POST"])
+@login_required
+def send_message(property_id):
+
+    property = Property.query.get_or_404(property_id)
+
+    text = request.form["message"]
+
+    msg = Message(
+        sender_id=current_user.id,
+        receiver_id=property.landlord_id,
+        property_id=property.id,
+        message=text
+    )
+
+    db.session.add(msg)
+    db.session.commit()
+
+    return redirect(url_for(
+        "property_details",
+        property_id=property.id
+    ))
+
+@app.route("/messages")
+@login_required
+def messages():
+
+    if current_user.role != "landlord":
+        return redirect(url_for("dashboard"))
+
+    msgs = Message.query.filter_by(
+        receiver_id=current_user.id
+    ).all()
+
+    return render_template(
+        "messages.html",
+        messages=msgs
+    )
+
+@app.route("/reply/<int:id>", methods=["GET","POST"])
+@login_required
+def reply(id):
+
+    msg = Message.query.get_or_404(id)
+
+    if request.method == "POST":
+
+        reply = Message(
+
+            sender_id=current_user.id,
+
+            receiver_id=msg.sender_id,
+
+            property_id=msg.property_id,
+
+            message=request.form["message"]
+
+        )
+
+        db.session.add(reply)
+
+        db.session.commit()
+
+        if current_user.role == "landlord":
+            return redirect(url_for("messages"))
+        else:
+            return redirect(url_for("my_messages"))
+
+    return render_template(
+        "reply.html",
+        message=msg
+    )
+
+@app.route("/my_messages")
+@login_required
+def my_messages():
+
+    msgs = Message.query.filter_by(
+        receiver_id=current_user.id
+    ).all()
+
+    return render_template(
+        "my_messages.html",
+        messages=msgs
+    )
+
+# =========================
+# 📥 INBOX
+# =========================
+@app.route("/inbox")
+@login_required
+def inbox():
+
+    if current_user.role == "landlord":
+        return redirect(url_for("messages"))
+
+    return redirect(url_for("my_messages"))
 
 
 # =========================
