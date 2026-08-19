@@ -57,8 +57,15 @@ with app.app_context():
 def home():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
-    return render_template('index.html')
 
+    featured_properties = Property.query.order_by(
+        Property.id.desc()
+    ).limit(3).all()
+
+    return render_template(
+        'index.html',
+        featured_properties=featured_properties
+    )
 
 # REGISTER
 @app.route('/register', methods=['GET', 'POST'])
