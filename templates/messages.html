@@ -1,286 +1,1194 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Landlord Inbox - KEJAHUNT</title>
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    background:#f4f7fb;
-}
-
-/* ================= NAVBAR ================= */
-
-nav{
-
-    background:#14532d;
-    color:white;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:18px 40px;
-    box-shadow:0 4px 12px rgba(0,0,0,.15);
-
-}
-
-.logo{
-
-    font-size:28px;
-    font-weight:bold;
-
-}
-
-nav ul{
-
-    display:flex;
-    list-style:none;
-
-}
-
-nav ul li{
-
-    margin-left:25px;
-
-}
-
-nav ul li a{
-
-    color:white;
-    text-decoration:none;
-    font-weight:bold;
-    transition:.3s;
-
-}
-
-nav ul li a:hover{
-
-    color:#fde047;
-
-}
-
-/* ================= CONTENT ================= */
-
-.container{
-
-    width:90%;
-    max-width:1000px;
-    margin:40px auto;
-
-}
-
-.title{
-
-    color:#14532d;
-    margin-bottom:30px;
-
-}
-
-/* ================= MESSAGE CARD ================= */
-
-.message{
-
-    background:white;
-    padding:25px;
-    margin-bottom:25px;
-    border-radius:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,.12);
-    transition:.3s;
-
-}
-
-.message:hover{
-
-    transform:translateY(-6px);
-
-}
-
-.message h3{
-
-    color:#14532d;
-    margin-bottom:15px;
-
-}
-
-.message p{
-
-    color:#555;
-    margin:10px 0;
-
-}
-
-.reply{
-
-    display:inline-block;
-    margin-top:15px;
-    text-decoration:none;
-    background:#2563eb;
-    color:white;
-    padding:12px 22px;
-    border-radius:8px;
-    transition:.3s;
-
-}
-
-.reply:hover{
-
-    background:#1d4ed8;
-
-}
-
-/* ================= EMPTY ================= */
-
-.empty{
-
-    text-align:center;
-    color:#777;
-    font-size:20px;
-    margin-top:80px;
-
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:768px){
-
-nav{
-
-    flex-direction:column;
-
-}
-
-nav ul{
-
-    flex-direction:column;
-    margin-top:15px;
-
-}
-
-nav ul li{
-
-    margin:10px 0;
-
-}
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Messages | KEJAHUNT</title>
+
+    <style>
+        :root {
+            --primary: #6254e8;
+            --primary-dark: #4938ca;
+            --navy: #171b35;
+            --text: #252943;
+            --muted: #858aa3;
+            --surface: #ffffff;
+            --background: #f5f6fb;
+            --border: #eaebf3;
+            --incoming: #ffffff;
+            --outgoing: #eae7ff;
+            --success: #22a879;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .topbar {
+            min-height: 76px;
+            padding: 15px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            background: var(--navy);
+            color: white;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #887cff, #5543d7);
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 21px;
+            letter-spacing: 1px;
+        }
+
+        .brand p {
+            margin: 4px 0 0;
+            color: #b8bdd7;
+            font-size: 12px;
+        }
+
+        .dashboard-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 15px;
+            border: 1px solid #414563;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background .2s;
+        }
+
+        .dashboard-link:hover {
+            background: #2b3051;
+        }
+
+        .page {
+            max-width: 1450px;
+            margin: auto;
+            padding: 28px 4%;
+        }
+
+        .page-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .page-heading h2 {
+            margin: 0;
+            font-size: 27px;
+            letter-spacing: -.7px;
+        }
+
+        .page-heading p {
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .inbox-count {
+            background: #eae7ff;
+            color: var(--primary-dark);
+            padding: 9px 13px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .workspace {
+            height: min(690px, calc(100vh - 205px));
+            min-height: 480px;
+            display: grid;
+            grid-template-columns: 330px minmax(0, 1fr);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 19px;
+            overflow: hidden;
+            box-shadow: 0 12px 40px #20264a0a;
+        }
+
+        /* CONVERSATION SIDEBAR */
+
+        .sidebar {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            background: #fff;
+        }
+
+        .sidebar-top {
+            padding: 22px 19px 17px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 17px;
+        }
+
+        .sidebar-title h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .sidebar-title span {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box span {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 12px 12px 37px;
+            border: 1px solid var(--border);
+            outline: none;
+            border-radius: 10px;
+            background: #f8f8fc;
+            font-size: 13px;
+            transition: border .2s, box-shadow .2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px #6254e818;
+        }
+
+        .contact-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 9px;
+        }
+
+        .contact {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 11px;
+            margin-bottom: 5px;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            background: transparent;
+            text-align: left;
+            cursor: pointer;
+            transition: background .2s, border .2s, transform .2s;
+        }
+
+        .contact:hover {
+            background: #f7f6ff;
+            transform: translateX(2px);
+        }
+
+        .contact.active {
+            background: #f0eeff;
+            border-color: #e0dcff;
+        }
+
+        .avatar {
+            position: relative;
+            flex-shrink: 0;
+            width: 45px;
+            height: 45px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(145deg, #dedaff, #bcb5ff);
+            color: #4938ca;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .contact-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .contact-name {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 750;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .contact-preview {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .contact-arrow {
+            color: #a1a4bb;
+            font-size: 20px;
+        }
+
+        .no-results {
+            padding: 25px 12px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* CHAT WORKSPACE */
+
+        .chat-area {
+            min-width: 0;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background: #fafaff;
+        }
+
+        .chat-header {
+            min-height: 84px;
+            padding: 17px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            border-bottom: 1px solid var(--border);
+            background: #fff;
+        }
+
+        .chat-person {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .chat-person h3 {
+            margin: 0;
+            font-size: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .chat-person p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .connection-indicator {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            margin-right: 5px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .conversation-label {
+            padding: 8px 11px;
+            border-radius: 8px;
+            background: #f0eeff;
+            color: var(--primary-dark);
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .chat-pane {
+            display: none;
+            flex: 1;
+            min-height: 0;
+            flex-direction: column;
+        }
+
+        .chat-pane.active {
+            display: flex;
+        }
+
+        .chat-messages {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 17px;
+        }
+
+        .conversation-divider {
+            align-self: center;
+            margin: 0 0 8px;
+            padding: 8px 13px;
+            border: 1px solid #ececf5;
+            border-radius: 8px;
+            background: #fff;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .message-row {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .message-row.incoming {
+            align-items: flex-start;
+        }
+
+        .message-row.outgoing {
+            align-items: flex-end;
+        }
+
+        .message-label {
+            padding: 0 4px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .message-card {
+            max-width: min(78%, 520px);
+            padding: 13px 16px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: var(--incoming);
+            box-shadow: 0 3px 10px #24264a06;
+            overflow-wrap: anywhere;
+        }
+
+        .outgoing .message-card {
+            border-color: #ded9ff;
+            background: var(--outgoing);
+            border-bottom-right-radius: 4px;
+        }
+
+        .incoming .message-card {
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-text {
+            color: #343751;
+            font-size: 13px;
+            line-height: 1.65;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .message-property {
+            display: block;
+            margin-top: 9px;
+            padding-top: 8px;
+            border-top: 1px solid #dedfea;
+            color: #7165c9;
+            font-size: 11px;
+        }
+
+        .message-time {
+            display: block;
+            margin-top: 7px;
+            text-align: right;
+            color: #8d91a8;
+            font-size: 10px;
+        }
+
+        /* MESSAGE COMPOSER */
+
+        .composer-wrap {
+            padding: 15px 20px 18px;
+            border-top: 1px solid var(--border);
+            background: #fff;
+        }
+
+        .composer-hint {
+            margin: 0 0 10px 3px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .message-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px;
+            border: 1px solid #e7e6f3;
+            border-radius: 14px;
+            background: #f9f9fd;
+            transition: border .2s, box-shadow .2s;
+        }
+
+        .message-form:focus-within {
+            border-color: #aaa1ff;
+            box-shadow: 0 0 0 3px #6254e810;
+        }
+
+        .message-form input {
+            flex: 1;
+            min-width: 0;
+            padding: 11px 10px;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        .message-form input::placeholder {
+            color: #a0a3b7;
+        }
+
+        .send-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 750;
+            cursor: pointer;
+            transition: background .2s, transform .2s;
+        }
+
+        .send-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .send-button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            min-height: 15px;
+            margin: 8px 3px 0;
+            color: #d04444;
+            font-size: 11px;
+        }
+
+        .empty-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .empty-illustration {
+            width: 90px;
+            height: 90px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 20px;
+            border-radius: 28px;
+            background: #ece9ff;
+            color: var(--primary);
+            font-size: 38px;
+        }
+
+        .empty-chat h3 {
+            margin: 0 0 9px;
+            font-size: 20px;
+        }
+
+        .empty-chat p {
+            max-width: 300px;
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .mobile-back {
+            display: none;
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        /* RESPONSIVE DESIGN */
+
+        @media (max-width: 850px) {
+            .workspace {
+                grid-template-columns: 270px minmax(0, 1fr);
+            }
+
+            .chat-header {
+                padding: 15px;
+            }
+
+            .chat-messages {
+                padding: 18px;
+            }
+
+            .conversation-label {
+                display: none;
+            }
+
+            .message-card {
+                max-width: 90%;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .topbar {
+                min-height: 67px;
+                padding: 12px 16px;
+            }
+
+            .brand h1 {
+                font-size: 18px;
+            }
+
+            .brand p {
+                font-size: 10px;
+            }
+
+            .brand-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .dashboard-link {
+                padding: 9px;
+                font-size: 11px;
+            }
+
+            .page {
+                padding: 19px 12px;
+            }
+
+            .page-heading {
+                align-items: center;
+            }
+
+            .page-heading h2 {
+                font-size: 22px;
+            }
+
+            .page-heading p {
+                font-size: 12px;
+            }
+
+            .workspace {
+                position: relative;
+                height: calc(100dvh - 175px);
+                min-height: 400px;
+                grid-template-columns: minmax(0, 1fr);
+                border-radius: 14px;
+            }
+
+            .sidebar {
+                grid-column: 1;
+            }
+
+            .chat-area {
+                display: none;
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .workspace.show-chat .sidebar {
+                display: none;
+            }
+
+            .workspace.show-chat .chat-area {
+                display: flex;
+            }
+
+            .mobile-back {
+                display: inline-block;
+                flex-shrink: 0;
+            }
+
+            .chat-header {
+                min-height: 72px;
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .chat-person {
+                flex: 1;
+                gap: 9px;
+            }
+
+            .chat-person .avatar {
+                width: 38px;
+                height: 38px;
+                border-radius: 11px;
+            }
+
+            .chat-person h3 {
+                font-size: 13px;
+            }
+
+            .chat-person p {
+                font-size: 10px;
+            }
+
+            .chat-messages {
+                padding: 14px 11px;
+                gap: 13px;
+            }
+
+            .message-card {
+                max-width: 92%;
+                padding: 11px 12px;
+            }
+
+            .composer-wrap {
+                padding: 10px;
+            }
+
+            .message-form {
+                gap: 5px;
+            }
+
+            .message-form input {
+                padding: 10px 7px;
+                font-size: 12px;
+            }
+
+            .send-button {
+                padding: 11px 12px;
+            }
+
+            .composer-hint {
+                font-size: 10px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<nav>
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-icon">K</div>
+        <div>
+            <h1>KEJAHUNT</h1>
+            <p>Property conversations, made simple.</p>
+        </div>
+    </div>
 
-<div class="logo">
+    <a class="dashboard-link" href="{{ url_for('landlord_dashboard') }}">
+        ← Dashboard
+    </a>
+</header>
 
-🏠 KEJAHUNT
+<main class="page">
 
-</div>
+    <div class="page-heading">
+        <div>
+            <h2>Your Messages</h2>
+            <p>Connect with house hunters and manage property enquiries.</p>
+        </div>
 
-<ul>
+        <div class="inbox-count">
+            {{ conversations|length }} Conversation{% if conversations|length != 1 %}s{% endif %}
+        </div>
+    </div>
 
-<li>
-<a href="/">Home</a>
-</li>
+    <div class="workspace" id="workspace">
 
-<li>
-<a href="/landlord_dashboard">Dashboard</a>
-</li>
+        <!-- LEFT: CONVERSATION LIST -->
 
-<li>
-<a href="/my_properties">My Listings</a>
-</li>
+        <aside class="sidebar">
 
-<li>
-<a href="/logout">Logout</a>
-</li>
+            <div class="sidebar-top">
+                <div class="sidebar-title">
+                    <h3>Conversations</h3>
+                    <span>YOUR INBOX</span>
+                </div>
 
-</ul>
+                <div class="search-box">
+                    <span>⌕</span>
+                    <input
+                        type="search"
+                        id="contactSearch"
+                        placeholder="Search people or messages..."
+                        autocomplete="off"
+                    >
+                </div>
+            </div>
 
-</nav>
+            <div class="contact-list" id="contactList">
 
-<div class="container">
+                {% for conversation in conversations %}
+                    <button
+                        type="button"
+                        class="contact"
+                        data-chat="{{ conversation.contact.id }}"
+                    >
+                        <span class="avatar">
+                            {{ conversation.contact.username[0]|upper }}
+                        </span>
 
-<h1 class="title">
+                        <span class="contact-info">
+                            <span class="contact-name">
+                                {{ conversation.contact.username }}
+                            </span>
 
-📥 Landlord Inbox
+                            <span
+                                class="contact-preview"
+                                id="preview-{{ conversation.contact.id }}"
+                            >{{ conversation.last_message.message }}</span>
+                        </span>
 
-</h1>
+                        <span class="contact-arrow">›</span>
+                    </button>
+                {% else %}
+                    <div class="no-results">
+                        <p>No conversations yet.</p>
+                        <p>New property enquiries will appear here.</p>
+                    </div>
+                {% endfor %}
 
-{% for m in messages %}
+                <div class="no-results" id="searchEmpty" hidden>
+                    No matching conversations found.
+                </div>
 
-<div class="message">
+            </div>
+        </aside>
 
-<h3>
+        <!-- RIGHT: CHAT AREA -->
 
-👤 {{ m.sender.username }}
+        <section class="chat-area">
 
-</h3>
+            <div class="chat-header">
+                <button
+                    type="button"
+                    class="mobile-back"
+                    id="mobileBack"
+                    aria-label="Back to conversations"
+                >←</button>
 
-<p>
+                <div class="chat-person">
+                    <span class="avatar" id="headerAvatar">K</span>
 
-<b>Property:</b>
+                    <div>
+                        <h3 id="headerName">Welcome to your inbox</h3>
+                        <p>
+                            <span class="connection-indicator"></span>
+                            <span id="headerStatus">Select a conversation to begin</span>
+                        </p>
+                    </div>
+                </div>
 
-{{ m.property.title }}
+                <span class="conversation-label">PRIVATE CONVERSATION</span>
+            </div>
 
-</p>
+            {% for conversation in conversations %}
+                <section
+                    class="chat-pane"
+                    id="chat-{{ conversation.contact.id }}"
+                    data-contact-id="{{ conversation.contact.id }}"
+                    data-reference-id="{{ conversation.reference_id }}"
+                >
 
-<p>
+                    <div
+                        class="chat-messages"
+                        id="chat-messages-{{ conversation.contact.id }}"
+                    >
+                        <div class="conversation-divider">
+                            Start of conversation history
+                        </div>
 
-{{ m.message }}
+                        {% for m in conversation.messages %}
+                            <div class="message-row {% if m.sender_id == current_user.id %}outgoing{% else %}incoming{% endif %}">
 
-</p>
+                                <span class="message-label">
+                                    {% if m.sender_id == current_user.id %}
+                                        You
+                                    {% else %}
+                                        {{ m.sender.username }}
+                                    {% endif %}
+                                </span>
 
-<a class="reply" href="/reply/{{ m.id }}">
+                                <div class="message-card">
+                                    <div class="message-text">{{ m.message }}</div>
 
-Reply
+                                    {% if m.property %}
+                                        <span class="message-property">
+                                            Property enquiry: {{ m.property.title }}
+                                        </span>
+                                    {% endif %}
 
-</a>
+                                    <span class="message-time">
+                                        {% if m.sender_id == current_user.id %}
+                                            Sent
+                                        {% else %}
+                                            Received
+                                        {% endif %}
+                                    </span>
+                                </div>
 
-</div>
+                            </div>
+                        {% endfor %}
 
-{% else %}
+                    </div>
 
-<div class="empty">
+                    <div class="composer-wrap">
+                        <p class="composer-hint">
+                            Keep your property discussions in one place.
+                        </p>
 
-📭 No messages yet.
+                        <form
+                            class="message-form"
+                            action="{{ url_for('reply', id=conversation.reference_id) }}"
+                            method="POST"
+                            data-contact-id="{{ conversation.contact.id }}"
+                        >
+                            <input
+                                type="text"
+                                name="message"
+                                maxlength="2000"
+                                placeholder="Write your message..."
+                                autocomplete="off"
+                                required
+                            >
 
-</div>
+                            <button type="submit" class="send-button">
+                                Send <span>➤</span>
+                            </button>
+                        </form>
 
-{% endfor %}
+                        <div
+                            class="feedback"
+                            id="feedback-{{ conversation.contact.id }}"
+                            role="status"
+                            aria-live="polite"
+                        ></div>
+                    </div>
 
-</div>
+                </section>
+            {% endfor %}
+
+            {% if not conversations %}
+                <div class="empty-chat">
+                    <div class="empty-illustration">✉</div>
+                    <h3>Your inbox starts here</h3>
+                    <p>
+                        When house hunters contact you about your properties,
+                        their conversations will appear here.
+                    </p>
+                </div>
+            {% else %}
+                <div class="empty-chat" id="welcomePanel">
+                    <div class="empty-illustration">✦</div>
+                    <h3>Let's talk property</h3>
+                    <p>
+                        Choose a conversation from the left to read messages
+                        and respond to house hunters.
+                    </p>
+                </div>
+            {% endif %}
+
+        </section>
+
+    </div>
+</main>
 
 <script>
+    const workspace = document.getElementById("workspace");
+    const contactButtons = Array.from(
+        document.querySelectorAll(".contact")
+    );
+    const chatPanes = document.querySelectorAll(".chat-pane");
 
-const cards=document.querySelectorAll(".message");
+    const headerName = document.getElementById("headerName");
+    const headerAvatar = document.getElementById("headerAvatar");
+    const headerStatus = document.getElementById("headerStatus");
 
-cards.forEach(function(card){
+    const mobileBack = document.getElementById("mobileBack");
+    const searchInput = document.getElementById("contactSearch");
+    const searchEmpty = document.getElementById("searchEmpty");
+    const welcomePanel = document.getElementById("welcomePanel");
 
-card.addEventListener("mouseenter",function(){
+    function openChat(contactId) {
+        const pane = document.getElementById("chat-" + contactId);
 
-this.style.boxShadow="0 18px 35px rgba(0,0,0,.25)";
+        if (!pane) return;
 
-});
+        chatPanes.forEach(chat => {
+            chat.classList.toggle(
+                "active",
+                chat.dataset.contactId === String(contactId)
+            );
+        });
 
-card.addEventListener("mouseleave",function(){
+        contactButtons.forEach(button => {
+            button.classList.toggle(
+                "active",
+                button.dataset.chat === String(contactId)
+            );
+        });
 
-this.style.boxShadow="0 8px 20px rgba(0,0,0,.12)";
+        const selectedButton = contactButtons.find(
+            button => button.dataset.chat === String(contactId)
+        );
 
-});
+        if (selectedButton) {
+            const name = selectedButton
+                .querySelector(".contact-name")
+                .textContent.trim();
 
-});
+            headerName.textContent = name;
+            headerAvatar.textContent = name.charAt(0).toUpperCase();
+            headerStatus.textContent = "Property conversation";
+        }
 
+        if (welcomePanel) {
+            welcomePanel.style.display = "none";
+        }
+
+        workspace.classList.add("show-chat");
+
+        const messageArea = pane.querySelector(".chat-messages");
+
+        requestAnimationFrame(() => {
+            messageArea.scrollTop = messageArea.scrollHeight;
+        });
+    }
+
+    // Open conversations by clicking a contact.
+
+    contactButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            openChat(button.dataset.chat);
+        });
+    });
+
+    // Search by contact name or conversation message.
+
+    searchInput.addEventListener("input", function() {
+        const term = this.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        contactButtons.forEach(button => {
+            const contactId = button.dataset.chat;
+            const pane = document.getElementById("chat-" + contactId);
+
+            const searchableText = (
+                button.textContent + " " +
+                (pane ? pane.textContent : "")
+            ).toLowerCase();
+
+            const matches = searchableText.includes(term);
+
+            button.style.display = matches ? "flex" : "none";
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        searchEmpty.hidden = visibleCount !== 0;
+    });
+
+    // Return to the conversation list on mobile.
+
+    mobileBack.addEventListener("click", () => {
+        workspace.classList.remove("show-chat");
+    });
+
+    // Send messages without reloading the page.
+
+    document.querySelectorAll(".message-form").forEach(form => {
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const input = form.querySelector('input[name="message"]');
+            const button = form.querySelector(".send-button");
+            const contactId = form.dataset.contactId;
+
+            const feedback = document.getElementById(
+                "feedback-" + contactId
+            );
+
+            const text = input.value.trim();
+
+            if (!text) {
+                input.focus();
+                return;
+            }
+
+            if (text.length > 2000) {
+                feedback.textContent = "Your message is too long.";
+                return;
+            }
+
+            button.disabled = true;
+            feedback.textContent = "Sending...";
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: new URLSearchParams({
+                        message: text
+                    }),
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    feedback.textContent =
+                        data.error || "Unable to send your message.";
+                    return;
+                }
+
+                const pane = document.getElementById(
+                    "chat-" + contactId
+                );
+
+                const messageArea = pane.querySelector(".chat-messages");
+
+                // Create message elements safely without inserting HTML
+                // supplied by the user.
+
+                const row = document.createElement("div");
+                row.className = "message-row outgoing";
+
+                const label = document.createElement("span");
+                label.className = "message-label";
+                label.textContent = "You";
+
+                const card = document.createElement("div");
+                card.className = "message-card";
+
+                const messageText = document.createElement("div");
+                messageText.className = "message-text";
+                messageText.textContent = data.message;
+
+                const time = document.createElement("span");
+                time.className = "message-time";
+                time.textContent = "Sent";
+
+                card.appendChild(messageText);
+                card.appendChild(time);
+
+                row.appendChild(label);
+                row.appendChild(card);
+
+                messageArea.appendChild(row);
+
+                // Keep the newest message as the reply reference.
+
+                pane.dataset.referenceId = data.id;
+
+                form.action = form.action.replace(
+                    /\/reply\/\d+$/,
+                    "/reply/" + data.id
+                );
+
+                // Update the conversation preview.
+
+                const preview = document.getElementById(
+                    "preview-" + contactId
+                );
+
+                if (preview) {
+                    preview.textContent = data.message;
+                }
+
+                // Move the active conversation to the top.
+
+                const contact = contactButtons.find(
+                    item => item.dataset.chat === String(contactId)
+                );
+
+                if (contact) {
+                    const list = document.getElementById("contactList");
+                    list.prepend(contact);
+                }
+
+                input.value = "";
+                feedback.textContent = "Message sent successfully.";
+
+                messageArea.scrollTop = messageArea.scrollHeight;
+
+            } catch (error) {
+                feedback.textContent =
+                    "Could not send your message. Please try again.";
+            } finally {
+                button.disabled = false;
+                input.focus();
+            }
+        });
+    });
+
+    // Open the first conversation automatically.
+
+    if (contactButtons.length > 0) {
+        openChat(contactButtons[0].dataset.chat);
+    }
 </script>
 
 </body>

@@ -1,8 +1,11 @@
 import uuid
 import os
 import secrets
+
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for, jsonify
+from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 from flask_login import (
     LoginManager,
@@ -22,21 +25,26 @@ from models import db, User, Property, Favorite, Message
 app = Flask(__name__)
 
 # CONFIG
+
 app.config['SECRET_KEY'] = 'kejahunt-secret-key'
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-app.config['SQLALCHEMY_DATABASE_URI'] = \
+app.config['SQLALCHEMY_DATABASE_URI'] = (
     'sqlite:///' + os.path.join(basedir, 'kejahunt.db')
+)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 UPLOAD_FOLDER = os.path.join(basedir, 'static/uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
 db.init_app(app)
 
 # LOGIN MANAGER
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
@@ -48,19 +56,23 @@ def load_user(user_id):
 
 
 # CREATE DB
+
 with app.app_context():
     db.create_all()
 
 
 # HOME
+
 @app.route('/')
 def home():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
+
     return render_template('index.html')
 
 
 # REGISTER
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -93,6 +105,7 @@ def register():
 
 
 # LOGIN
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -111,20 +124,24 @@ def login():
 
 
 # DASHBOARD ROUTER
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
     if current_user.role == "landlord":
         return redirect(url_for('landlord_dashboard'))
+
     return redirect(url_for('user_dashboard'))
 
 
 # USER DASHBOARD
+
 @app.route('/user_dashboard')
 @login_required
 def user_dashboard():
     if current_user.role != "user":
         return redirect(url_for('dashboard'))
+
     return render_template(
         'dashboard/user_dashboard.html',
         user=current_user
@@ -132,11 +149,13 @@ def user_dashboard():
 
 
 # LANDLORD DASHBOARD
+
 @app.route('/landlord_dashboard')
 @login_required
 def landlord_dashboard():
     if current_user.role != "landlord":
         return redirect(url_for('dashboard'))
+
     return render_template(
         'dashboard/landlord_dashboard.html',
         user=current_user
@@ -144,6 +163,7 @@ def landlord_dashboard():
 
 
 # LOGOUT
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -156,6 +176,7 @@ def logout():
 # =========================
 
 # ADD PROPERTY
+
 @app.route('/add_property', methods=['GET', 'POST'])
 @login_required
 def add_property():
@@ -163,12 +184,18 @@ def add_property():
         return "Only landlords can add properties."
 
     if request.method == 'POST':
-        image = request.files['image']
+        image = request.files.get('image')
         filename = None
 
-        if image:
-            filename = str(uuid.uuid4()) + "_" + secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        if image and image.filename:
+            filename = (
+                str(uuid.uuid4()) + "_" +
+                secure_filename(image.filename)
+            )
+
+            image.save(
+                os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            )
 
         new_property = Property(
             title=request.form['title'],
@@ -191,6 +218,7 @@ def add_property():
 
 
 # LANDLORD PROPERTIES
+
 @app.route('/my_properties')
 @login_required
 def my_properties():
@@ -210,6 +238,7 @@ def my_properties():
 # =========================
 # 🔍 SEARCH + PUBLIC LISTING
 # =========================
+
 @app.route('/properties')
 def properties():
     query = request.args.get('q')
@@ -231,18 +260,20 @@ def properties():
 
 
 # PROPERTY DETAILS
+
 @app.route('/property/<int:property_id>')
 def property_details(property_id):
     prop = Property.query.get_or_404(property_id)
+
     return render_template(
         'property_details.html',
         property=prop
     )
 
+
 @app.route('/save/<int:property_id>')
 @login_required
 def save_property(property_id):
-
     property = Property.query.get_or_404(property_id)
 
     existing = Favorite.query.filter_by(
@@ -263,10 +294,10 @@ def save_property(property_id):
 
     return redirect(url_for('properties'))
 
+
 @app.route('/saved')
 @login_required
 def saved_properties():
-
     favorites = Favorite.query.filter_by(
         user_id=current_user.id
     ).all()
@@ -276,10 +307,10 @@ def saved_properties():
         favorites=favorites
     )
 
+
 @app.route('/unsave/<int:property_id>')
 @login_required
 def unsave_property(property_id):
-
     favorite = Favorite.query.filter_by(
         user_id=current_user.id,
         property_id=property_id
@@ -291,13 +322,21 @@ def unsave_property(property_id):
 
     return redirect(url_for('saved_properties'))
 
+
+# SEND MESSAGE TO LANDLORD
+
 @app.route("/message/<int:property_id>", methods=["POST"])
 @login_required
 def send_message(property_id):
-
     property = Property.query.get_or_404(property_id)
 
-    text = request.form["message"]
+    if current_user.id == property.landlord_id:
+        return "You cannot message yourself about your own property.", 400
+
+    text = request.form.get("message", "").strip()
+
+    if not text:
+        return "Message cannot be empty.", 400
 
     msg = Message(
         sender_id=current_user.id,
@@ -314,76 +353,134 @@ def send_message(property_id):
         property_id=property.id
     ))
 
+
+# LANDLORD MESSAGES
+# Conversations are grouped by person, not by property.
+
 @app.route("/messages")
 @login_required
 def messages():
-
     if current_user.role != "landlord":
         return redirect(url_for("dashboard"))
 
-    msgs = Message.query.filter_by(
-        receiver_id=current_user.id
-    ).all()
+    all_messages = Message.query.filter(
+        or_(
+            Message.sender_id == current_user.id,
+            Message.receiver_id == current_user.id
+        )
+    ).order_by(Message.id.asc()).all()
+
+    grouped = {}
+
+    for msg in all_messages:
+        if msg.sender_id == current_user.id:
+            other_user = msg.receiver
+        else:
+            other_user = msg.sender
+
+        if other_user is None:
+            continue
+
+        other_id = other_user.id
+
+        if other_id not in grouped:
+            grouped[other_id] = {
+                "contact": other_user,
+                "messages": [],
+                "reference_id": msg.id,
+                "last_message": msg
+            }
+
+        grouped[other_id]["messages"].append(msg)
+        grouped[other_id]["reference_id"] = msg.id
+        grouped[other_id]["last_message"] = msg
+
+    conversations = sorted(
+        grouped.values(),
+        key=lambda conversation: conversation["reference_id"],
+        reverse=True
+    )
 
     return render_template(
         "messages.html",
-        messages=msgs
+        conversations=conversations
     )
 
-@app.route("/reply/<int:id>", methods=["GET","POST"])
+
+# REPLY WITHIN THE SAME CONVERSATION
+
+@app.route("/reply/<int:id>", methods=["GET", "POST"])
 @login_required
 def reply(id):
-
     msg = Message.query.get_or_404(id)
 
+    # Only the participants in this conversation can access it.
+    if current_user.id not in (msg.sender_id, msg.receiver_id):
+        return "Unauthorized", 403
+
     if request.method == "POST":
+        text = request.form.get("message", "").strip()
 
-        reply = Message(
+        if not text:
+            return jsonify({
+                "success": False,
+                "error": "Please enter a message."
+            }), 400
 
+        if msg.sender_id == current_user.id:
+            recipient_id = msg.receiver_id
+        else:
+            recipient_id = msg.sender_id
+
+        new_message = Message(
             sender_id=current_user.id,
-
-            receiver_id=msg.sender_id,
-
+            receiver_id=recipient_id,
             property_id=msg.property_id,
-
-            message=request.form["message"]
-
+            message=text
         )
 
-        db.session.add(reply)
-
+        db.session.add(new_message)
         db.session.commit()
 
-        if current_user.role == "landlord":
-            return redirect(url_for("messages"))
-        else:
-            return redirect(url_for("my_messages"))
+        return jsonify({
+            "success": True,
+            "id": new_message.id,
+            "sender_id": current_user.id,
+            "sender_name": current_user.username,
+            "message": new_message.message
+        })
 
     return render_template(
         "reply.html",
         message=msg
     )
 
+
+# HOUSE HUNTER MESSAGES
+
 @app.route("/my_messages")
 @login_required
 def my_messages():
-
-    msgs = Message.query.filter_by(
-        receiver_id=current_user.id
-    ).all()
+    msgs = Message.query.filter(
+        or_(
+            Message.sender_id == current_user.id,
+            Message.receiver_id == current_user.id
+        )
+    ).order_by(Message.id.asc()).all()
 
     return render_template(
         "my_messages.html",
         messages=msgs
     )
 
+
 # =========================
 # 📥 INBOX
 # =========================
+
 @app.route("/inbox")
 @login_required
 def inbox():
-
     if current_user.role == "landlord":
         return redirect(url_for("messages"))
 
@@ -397,6 +494,7 @@ def inbox():
 @app.route('/api/register', methods=['POST'])
 def api_register():
     data = request.get_json()
+
     print("Register data received:", data)
 
     if not data:
@@ -439,9 +537,11 @@ def api_register():
         'token': token
     }), 201
 
+
 @app.route('/api/login', methods=['POST'])
 def api_login():
     data = request.get_json()
+
     print("Login data received:", data)
 
     if not data:
@@ -472,8 +572,10 @@ def api_login():
 def get_properties():
     properties = Property.query.all()
     result = []
+
     for p in properties:
         landlord = User.query.get(p.landlord_id)
+
         result.append({
             'id': p.id,
             'title': p.title,
@@ -484,6 +586,7 @@ def get_properties():
             'landlord_name': landlord.username if landlord else 'Unknown',
             'landlord_id': p.landlord_id
         })
+
     return jsonify(result)
 
 
@@ -502,11 +605,19 @@ def api_post_property():
     property_type = request.form.get('property_type')
 
     filename = None
+
     if 'image' in request.files:
         image = request.files['image']
+
         if image.filename != '':
-            filename = str(uuid.uuid4()) + "_" + secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            filename = (
+                str(uuid.uuid4()) + "_" +
+                secure_filename(image.filename)
+            )
+
+            image.save(
+                os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            )
 
     new_property = Property(
         title=title,

@@ -1,310 +1,652 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Add Property - KEJAHUNT</title>
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    background:#f4f7fb;
-}
-
-/* ================= NAVBAR ================= */
-
-nav{
-
-    background:#14532d;
-    color:white;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:18px 40px;
-    box-shadow:0 4px 12px rgba(0,0,0,.15);
-
-}
-
-.logo{
-
-    font-size:28px;
-    font-weight:bold;
-
-}
-
-nav ul{
-
-    display:flex;
-    list-style:none;
-
-}
-
-nav ul li{
-
-    margin-left:25px;
-
-}
-
-nav ul li a{
-
-    color:white;
-    text-decoration:none;
-    font-weight:bold;
-    transition:.3s;
-
-}
-
-nav ul li a:hover{
-
-    color:#fde047;
-
-}
-
-/* ================= FORM ================= */
-
-.container{
-
-    width:90%;
-    max-width:700px;
-    margin:40px auto;
-
-}
-
-.form-card{
-
-    background:white;
-    padding:35px;
-    border-radius:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,.12);
-    transition:.3s;
-
-}
-
-.form-card:hover{
-
-    transform:translateY(-5px);
-
-}
-
-h1{
-
-    color:#14532d;
-    margin-bottom:25px;
-
-}
-
-input,
-textarea{
-
-    width:100%;
-    padding:14px;
-    margin-bottom:18px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    font-size:16px;
-
-}
-
-textarea{
-
-    resize:vertical;
-    min-height:120px;
-
-}
-
-input[type=file]{
-
-    border:none;
-
-}
-
-button{
-
-    width:100%;
-    background:#16a34a;
-    color:white;
-    border:none;
-    padding:15px;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:17px;
-    transition:.3s;
-
-}
-
-button:hover{
-
-    background:#15803d;
-
-}
-
-#preview{
-
-    display:none;
-    width:100%;
-    margin-top:10px;
-    border-radius:10px;
-    max-height:300px;
-    object-fit:cover;
-
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:768px){
-
-nav{
-
-    flex-direction:column;
-
-}
-
-nav ul{
-
-    flex-direction:column;
-    margin-top:15px;
-    text-align:center;
-
-}
-
-nav ul li{
-
-    margin:10px 0;
-
-}
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Property - KEJAHUNT</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        :root {
+            --green-dark: #064e3b;
+            --green-main: #15803d;
+            --green-light: #16a34a;
+            --green-pale: #ecfdf5;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border: #dbe3e8;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+
+        nav {
+            background: linear-gradient(135deg, #064e3b, #166534);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 6%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #86efac;
+        }
+
+        nav ul {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            list-style: none;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+
+        nav ul li a:hover {
+            color: #bbf7d0;
+        }
+
+        nav ul li a:focus-visible {
+            outline: 2px solid white;
+            outline-offset: 5px;
+        }
+
+        /* PAGE HEADER */
+
+        .container {
+            width: 92%;
+            max-width: 850px;
+            margin: 38px auto;
+        }
+
+        .page-heading {
+            margin-bottom: 24px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            background: #dcfce7;
+            color: #166534;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .page-heading h1 {
+            color: var(--green-dark);
+            font-size: 30px;
+            margin-bottom: 9px;
+        }
+
+        .page-heading p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        /* FORM CARD */
+
+        .form-card {
+            background: white;
+            padding: 32px;
+            border-radius: 18px;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.07);
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .section-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 38px;
+            height: 38px;
+            background: var(--green-pale);
+            color: var(--green-main);
+            border-radius: 11px;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .section-title h2 {
+            font-size: 18px;
+            color: var(--green-dark);
+            margin-bottom: 4px;
+        }
+
+        .section-title p {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section + .form-section {
+            border-top: 1px solid #e9eef2;
+            padding-top: 27px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 19px;
+        }
+
+        .form-group {
+            min-width: 0;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        input,
+        textarea {
+            display: block;
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #fff;
+            color: var(--text-dark);
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--green-main);
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 125px;
+            line-height: 1.6;
+        }
+
+        .field-help {
+            display: block;
+            margin-top: 7px;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* IMAGE UPLOAD */
+
+        .upload-box {
+            border: 2px dashed #bbd9c5;
+            background: #f8fdf9;
+            padding: 22px;
+            border-radius: 12px;
+            text-align: center;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .upload-box:hover,
+        .upload-box:focus-within {
+            border-color: var(--green-main);
+            background: #f0fdf4;
+        }
+
+        .upload-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .upload-box p {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--green-dark);
+            margin-bottom: 7px;
+        }
+
+        .upload-box small {
+            display: block;
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-bottom: 14px;
+        }
+
+        input[type="file"] {
+            border: 1px solid var(--border);
+            background: white;
+            font-size: 13px;
+            padding: 10px;
+        }
+
+        #preview {
+            display: none;
+            width: 100%;
+            max-height: 320px;
+            margin-top: 18px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid #e2e8f0;
+        }
+
+        .image-error {
+            display: none;
+            margin-top: 10px;
+            color: #b91c1c;
+            font-size: 13px;
+        }
+
+        /* BUTTONS */
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 20px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .btn-primary {
+            flex: 1;
+            border: none;
+            background: var(--green-main);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #166534;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            border: 1px solid var(--border);
+            background: white;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+        }
+
+        .form-note {
+            text-align: center;
+            margin-top: 19px;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 22px 15px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 650px) {
+            nav {
+                flex-direction: column;
+                padding: 18px 5%;
+                gap: 16px;
+            }
+
+            nav ul {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 18px;
+            }
+
+            .container {
+                margin: 27px auto;
+            }
+
+            .page-heading h1 {
+                font-size: 25px;
+            }
+
+            .form-card {
+                padding: 22px 17px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<nav>
+    <nav>
+        <div class="logo">🏠 KEJA<span>HUNT</span></div>
 
-<div class="logo">
+        <ul>
+            <li><a href="/landlord_dashboard">Dashboard</a></li>
+            <li><a href="/my_properties">My Listings</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
 
-🏠 KEJAHUNT
+    <main class="container">
 
-</div>
+        <header class="page-heading">
+            <span class="eyebrow">LANDLORD PORTAL</span>
+            <h1>Add New Property</h1>
+            <p>List your property on KEJAHUNT and help house hunters find their next home.</p>
+        </header>
 
-<ul>
+        <div class="form-card">
 
-<li>
-<a href="/landlord_dashboard">Dashboard</a>
-</li>
+            <form method="POST" enctype="multipart/form-data">
 
-<li>
-<a href="/my_properties">My Listings</a>
-</li>
+                <!-- PROPERTY DETAILS -->
 
-<li>
-<a href="/logout">Logout</a>
-</li>
+                <section class="form-section">
+                    <div class="section-title">
+                        <div class="section-number">1</div>
+                        <div>
+                            <h2>Property Details</h2>
+                            <p>Provide the basic information about your property.</p>
+                        </div>
+                    </div>
 
-</ul>
+                    <div class="form-grid">
 
-</nav>
+                        <div class="form-group full-width">
+                            <label for="title">Property Title <span class="required">*</span></label>
+                            <input
+                                type="text"
+                                id="title"
+                                name="title"
+                                placeholder="e.g. Spacious 2-bedroom apartment"
+                                required>
+                        </div>
 
-<div class="container">
+                        <div class="form-group full-width">
+                            <label for="description">Description <span class="required">*</span></label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                placeholder="Describe the property, available facilities, security and nearby amenities..."
+                                required></textarea>
+                        </div>
 
-<div class="form-card">
+                        <div class="form-group">
+                            <label for="price">Monthly Rent (KES) <span class="required">*</span></label>
+                            <input
+                                type="number"
+                                id="price"
+                                name="price"
+                                placeholder="e.g. 15000"
+                                min="0"
+                                step="any"
+                                required>
+                            <small class="field-help">Enter the rental price in Kenyan shillings.</small>
+                        </div>
 
-<h1>Add New Property</h1>
+                        <div class="form-group">
+                            <label for="location">Location <span class="required">*</span></label>
+                            <input
+                                type="text"
+                                id="location"
+                                name="location"
+                                placeholder="e.g. Nakuru, Section 58"
+                                required>
+                        </div>
 
-<form method="POST" enctype="multipart/form-data">
+                    </div>
+                </section>
 
-<input
-type="text"
-name="title"
-placeholder="Title"
-required>
+                <!-- ROOMS -->
 
-<textarea
-name="description"
-placeholder="Description"
-required></textarea>
+                <section class="form-section">
+                    <div class="section-title">
+                        <div class="section-number">2</div>
+                        <div>
+                            <h2>Rooms and Accommodation</h2>
+                            <p>Tell house hunters about the available space.</p>
+                        </div>
+                    </div>
 
-<input
-type="number"
-name="price"
-placeholder="Price (KES)"
-required>
+                    <div class="form-grid">
 
-<input
-type="text"
-name="location"
-placeholder="Location"
-required>
+                        <div class="form-group">
+                            <label for="bedrooms">Number of Bedrooms <span class="required">*</span></label>
+                            <input
+                                type="number"
+                                id="bedrooms"
+                                name="bedrooms"
+                                placeholder="e.g. 2"
+                                min="0"
+                                step="1"
+                                required>
+                        </div>
 
-<input
-type="number"
-name="bedrooms"
-placeholder="Bedrooms"
-required>
+                        <div class="form-group">
+                            <label for="bathrooms">Number of Bathrooms <span class="required">*</span></label>
+                            <input
+                                type="number"
+                                id="bathrooms"
+                                name="bathrooms"
+                                placeholder="e.g. 1"
+                                min="0"
+                                step="1"
+                                required>
+                        </div>
 
-<input
-type="number"
-name="bathrooms"
-placeholder="Bathrooms"
-required>
+                    </div>
+                </section>
 
-<input
-type="text"
-name="phone"
-placeholder="Landlord Phone (e.g. 2547...)"
-required>
+                <!-- CONTACT -->
 
-<input
-type="file"
-name="image"
-id="image"
-required>
+                <section class="form-section">
+                    <div class="section-title">
+                        <div class="section-number">3</div>
+                        <div>
+                            <h2>Contact Information</h2>
+                            <p>Provide a phone number for property enquiries.</p>
+                        </div>
+                    </div>
 
-<img id="preview">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="phone">Landlord Phone Number <span class="required">*</span></label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="e.g. 254712345678"
+                                required>
+                            <small class="field-help">Use the international format for a Kenyan number, such as 2547XXXXXXXX.</small>
+                        </div>
+                    </div>
+                </section>
 
-<button type="submit">
+                <!-- PROPERTY IMAGE -->
 
-Save Property
+                <section class="form-section">
+                    <div class="section-title">
+                        <div class="section-number">4</div>
+                        <div>
+                            <h2>Property Photos</h2>
+                            <p>Upload a clear photo to make your listing more informative.</p>
+                        </div>
+                    </div>
 
-</button>
+                    <div class="upload-box">
+                        <div class="upload-icon">📸</div>
+                        <p>Choose a property image</p>
+                        <small>Select a clear image of the house or apartment.</small>
 
-</form>
+                        <input
+                            type="file"
+                            name="image"
+                            id="image"
+                            accept="image/*"
+                            aria-describedby="image-help"
+                            required>
 
-</div>
+                        <small class="field-help" id="image-help">
+                            Select an image file supported by your browser.
+                        </small>
 
-</div>
+                        <p class="image-error" id="image-error" role="alert">
+                            Please select a valid image file.
+                        </p>
 
-<script>
+                        <img id="preview" alt="Preview of the selected property image">
+                    </div>
+                </section>
 
-const image=document.getElementById("image");
-const preview=document.getElementById("preview");
+                <!-- ACTIONS -->
 
-image.addEventListener("change",function(){
+                <div class="form-actions">
+                    <a href="/my_properties" class="btn btn-secondary">Cancel</a>
 
-const file=this.files[0];
+                    <button type="submit" class="btn btn-primary">
+                        ✓ Save Property
+                    </button>
+                </div>
 
-if(file){
+                <p class="form-note">
+                    Fields marked with <span class="required">*</span> are required.
+                    Please ensure your property details are accurate before submitting.
+                </p>
 
-preview.src=URL.createObjectURL(file);
+            </form>
+        </div>
 
-preview.style.display="block";
+    </main>
 
-}
+    <footer>
+        © 2026 KEJAHUNT. Helping you find a place to call home.
+    </footer>
 
-});
+    <script>
+        const image = document.getElementById("image");
+        const preview = document.getElementById("preview");
+        const imageError = document.getElementById("image-error");
 
-</script>
+        let previewUrl = null;
+
+        image.addEventListener("change", function () {
+            const file = this.files[0];
+
+            imageError.style.display = "none";
+
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+                previewUrl = null;
+            }
+
+            preview.removeAttribute("src");
+            preview.style.display = "none";
+
+            if (!file) {
+                return;
+            }
+
+            if (!file.type.startsWith("image/")) {
+                this.value = "";
+                imageError.style.display = "block";
+                return;
+            }
+
+            previewUrl = URL.createObjectURL(file);
+            preview.src = previewUrl;
+            preview.style.display = "block";
+        });
+    </script>
 
 </body>
 </html>

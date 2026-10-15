@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,127 +8,401 @@
 
     <style>
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial, Helvetica, sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
-        body{
-            background:linear-gradient(135deg,#0f766e,#14532d);
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
+        body {
+            background: linear-gradient(135deg, #064e3b, #0f766e, #14532d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        .login-box{
-            background:white;
-            padding:40px;
-            width:380px;
-            border-radius:15px;
-            text-align:center;
-            box-shadow:0 15px 35px rgba(0,0,0,.25);
-            animation:fadeIn .8s ease;
+        /* Background decoration */
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.07);
+            pointer-events: none;
         }
 
-        h2{
-            color:#14532d;
-            margin-bottom:25px;
+        body::before {
+            width: 350px;
+            height: 350px;
+            top: -120px;
+            left: -100px;
         }
 
-        input{
-            width:100%;
-            padding:12px;
-            margin:10px 0;
-            border:1px solid #ccc;
-            border-radius:8px;
-            font-size:15px;
-            transition:.3s;
+        body::after {
+            width: 300px;
+            height: 300px;
+            bottom: -100px;
+            right: -80px;
         }
 
-        input:focus{
-            outline:none;
-            border-color:#16a34a;
-            box-shadow:0 0 8px rgba(22,163,74,.3);
+        /* Login container */
+
+        .login-box {
+            background: #ffffff;
+            padding: 42px 38px;
+            width: 100%;
+            max-width: 410px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+            animation: fadeIn 0.7s ease;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-        button{
-            width:100%;
-            padding:12px;
-            margin-top:15px;
-            border:none;
-            border-radius:8px;
-            background:#2563eb;
-            color:white;
-            font-size:16px;
-            cursor:pointer;
-            transition:.3s;
+        /* Branding */
+
+        .logo {
+            width: 66px;
+            height: 66px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #059669, #065f46);
+            color: white;
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.25);
         }
 
-        button:hover{
-            background:#1d4ed8;
-            transform:scale(1.03);
+        .brand-name {
+            color: #065f46;
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
         }
 
-        @keyframes fadeIn{
-            from{
-                opacity:0;
-                transform:translateY(20px);
+        .brand-name span {
+            color: #059669;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #14532d;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .welcome-text {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* Form */
+
+        form {
+            text-align: left;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #dbe4e7;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #1e293b;
+            background: #f8fafc;
+            transition: border-color 0.3s, box-shadow 0.3s,
+                        background 0.3s;
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #059669;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.12);
+        }
+
+        /* Password field */
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 75px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #059669;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 6px;
+            width: auto;
+            margin: 0;
+        }
+
+        .toggle-password:hover {
+            color: #065f46;
+            background: transparent;
+            transform: translateY(-50%);
+        }
+
+        /* Login button */
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s,
+                        background 0.3s;
+            box-shadow: 0 6px 15px rgba(5, 150, 105, 0.2);
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(135deg, #047857, #065f46);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(5, 150, 105, 0.3);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+
+        .footer-text {
+            margin-top: 25px;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .footer-text a {
+            color: #059669;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .footer-text a:hover {
+            color: #065f46;
+            text-decoration: underline;
+        }
+
+        .security-note {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        /* Animation */
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-            to{
-                opacity:1;
-                transform:translateY(0);
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile responsiveness */
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .login-box {
+                padding: 32px 23px;
+                border-radius: 16px;
+            }
+
+            .brand-name {
+                font-size: 23px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            .logo {
+                width: 58px;
+                height: 58px;
+                font-size: 24px;
+            }
+        }
+
+        /* Reduced motion accessibility */
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
             }
         }
 
     </style>
-
 </head>
 
 <body>
 
 <div class="login-box">
 
-    <h2>Login</h2>
+    <div class="logo">K</div>
+
+    <div class="brand-name">
+        KEJA<span>HUNT</span>
+    </div>
+
+    <p class="subtitle">
+        Find your next home. Start your journey with us.
+    </p>
+
+    <h2>Welcome Back!</h2>
+
+    <p class="welcome-text">
+        Log in to access your KEJAHUNT account.
+    </p>
 
     <form method="POST">
 
-        <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            required
-        >
+        <div class="input-group">
+            <label for="email">Email Address</label>
 
-        <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Password"
-            required
-        >
+            <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Enter your email address"
+                autocomplete="email"
+                required
+            >
+        </div>
+
+        <div class="input-group">
+            <label for="password">Password</label>
+
+            <div class="password-wrapper">
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="toggle-password"
+                    id="togglePassword"
+                    aria-controls="password"
+                    aria-pressed="false"
+                >
+                    Show
+                </button>
+            </div>
+        </div>
 
         <button type="submit">
-            Login
+            Login to Your Account
         </button>
 
     </form>
+
+    <div class="footer-text">
+        Find a place to call home with <strong>KEJAHUNT</strong>.
+        <br>
+        Secure access to your account.
+    </div>
+
+    <div class="security-note">
+        &copy; 2026 KEJAHUNT. All rights reserved.
+    </div>
 
 </div>
 
 <script>
 
-const password = document.getElementById("password");
+    const password = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
 
-password.addEventListener("focus",function(){
-    this.style.background="#f9fafb";
-});
+    // Preserve the original password focus and blur behavior.
 
-password.addEventListener("blur",function(){
-    this.style.background="white";
-});
+    password.addEventListener("focus", function () {
+        this.style.background = "#f9fafb";
+    });
+
+    password.addEventListener("blur", function () {
+        this.style.background = "white";
+    });
+
+    // Show or hide the password.
+
+    togglePassword.addEventListener("click", function () {
+        const isPassword = password.type === "password";
+
+        password.type = isPassword ? "text" : "password";
+        this.textContent = isPassword ? "Hide" : "Show";
+        this.setAttribute("aria-pressed", String(isPassword));
+    });
 
 </script>
 

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,163 +6,322 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>User Dashboard - KEJAHUNT</title>
+<meta name="theme-color" content="#064e3b">
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-body{
-    background:#f4f7fb;
+body {
+    background: #f1f5f9;
+    color: #1e293b;
+    min-height: 100vh;
 }
 
 /* ================= NAVBAR ================= */
 
-nav{
-    background:#14532d;
-    color:white;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:18px 40px;
-    box-shadow:0 4px 12px rgba(0,0,0,.15);
+nav {
+    background: linear-gradient(135deg, #064e3b, #14532d);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 5%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-.logo{
-    font-size:28px;
-    font-weight:bold;
+.logo {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
-nav ul{
-    display:flex;
-    list-style:none;
+.logo span {
+    color: #6ee7b7;
 }
 
-nav ul li{
-    margin-left:25px;
+nav ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 8px;
 }
 
-nav ul li a{
-    color:white;
-    text-decoration:none;
-    font-weight:bold;
-    transition:.3s;
+nav ul li {
+    margin-left: 5px;
 }
 
-nav ul li a:hover{
-    color:#fde047;
+nav ul li a {
+    color: #ecfdf5;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 11px 13px;
+    display: block;
+    border-radius: 8px;
+    transition: background 0.3s, color 0.3s;
+}
+
+nav ul li a:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.13);
+}
+
+nav ul li:last-child a {
+    background: #dc2626;
+    color: white;
+}
+
+nav ul li:last-child a:hover {
+    background: #b91c1c;
 }
 
 /* ================= CONTENT ================= */
 
-.container{
-    width:90%;
-    max-width:1100px;
-    margin:40px auto;
+.container {
+    width: 90%;
+    max-width: 1150px;
+    margin: 42px auto;
 }
 
-.dashboard-title{
-    color:#14532d;
-    margin-bottom:10px;
+.dashboard-header {
+    margin-bottom: 30px;
 }
 
-.welcome{
-    color:#333;
-    margin-bottom:5px;
+.dashboard-title {
+    color: #064e3b;
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 14px;
 }
 
-.role{
-    color:#666;
-    margin-bottom:30px;
+.welcome {
+    color: #334155;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 9px;
+}
+
+.welcome span {
+    color: #059669;
+}
+
+.role {
+    display: inline-block;
+    color: #047857;
+    background: #d1fae5;
+    padding: 7px 13px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: capitalize;
+    margin-top: 5px;
 }
 
 /* ================= DASHBOARD CARD ================= */
 
-.card{
-    background:white;
-    border-radius:15px;
-    padding:30px;
-    box-shadow:0 8px 20px rgba(0,0,0,.12);
-    transition:.3s;
+.card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card:hover{
-    transform:translateY(-8px);
+.card:hover {
+    transform: translateY(-4px);
 }
 
-.card h2{
-    color:#14532d;
-    margin-bottom:20px;
+.card h2 {
+    color: #065f46;
+    font-size: 23px;
+    margin-bottom: 14px;
 }
 
-.card p{
-    color:#555;
-    margin-bottom:20px;
+.card p {
+    color: #64748b;
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 25px;
 }
 
-.button{
-    display:inline-block;
-    padding:12px 20px;
-    margin-right:10px;
-    margin-bottom:10px;
-    text-decoration:none;
-    color:white;
-    border-radius:8px;
-    transition:.3s;
+/* ================= DASHBOARD ACTIONS ================= */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 19px;
+    margin-right: 9px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: white;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: bold;
+    transition: transform 0.25s ease, box-shadow 0.25s ease,
+                background 0.25s ease;
 }
 
-.properties{
-    background:#2563eb;
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 15px rgba(0, 0, 0, 0.13);
 }
 
-.properties:hover{
-    background:#1d4ed8;
+.button:focus-visible,
+nav a:focus-visible {
+    outline: 3px solid #34d399;
+    outline-offset: 3px;
 }
 
-.saved{
-    background:#16a34a;
+.properties {
+    background: #059669;
 }
 
-.saved:hover{
-    background:#15803d;
+.properties:hover {
+    background: #047857;
 }
 
-.inbox{
-    background:#9333ea;
+.saved {
+    background: #0f766e;
 }
 
-.inbox:hover{
-    background:#7e22ce;
+.saved:hover {
+    background: #115e59;
 }
 
-.logout{
-    background:#dc2626;
+.inbox {
+    background: #6d28d9;
 }
 
-.logout:hover{
-    background:#b91c1c;
+.inbox:hover {
+    background: #5b21b6;
+}
+
+/* ================= QUICK GUIDE ================= */
+
+.dashboard-note {
+    margin-top: 25px;
+    padding: 20px 22px;
+    border: 1px solid #a7f3d0;
+    border-radius: 13px;
+    background: #ecfdf5;
+}
+
+.dashboard-note h3 {
+    color: #065f46;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.dashboard-note p {
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.8;
+    margin-bottom: 0;
+}
+
+/* ================= FOOTER ================= */
+
+footer {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 12px;
+    padding: 25px 15px;
+    margin-top: 30px;
 }
 
 /* ================= RESPONSIVE ================= */
 
-@media(max-width:768px){
+@media (max-width: 900px) {
 
-    nav{
-        flex-direction:column;
+    nav {
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
     }
 
-    nav ul{
-        margin-top:15px;
-        flex-direction:column;
-        text-align:center;
+    nav ul {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 5px;
     }
 
-    nav ul li{
-        margin:10px 0;
+    nav ul li {
+        margin: 0;
+    }
+
+    nav ul li a {
+        padding: 10px 12px;
+    }
+
+    .container {
+        margin: 30px auto;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .container {
+        width: 92%;
+        margin: 25px auto;
+    }
+
+    .dashboard-title {
+        font-size: 25px;
+    }
+
+    .welcome {
+        font-size: 18px;
+    }
+
+    .card {
+        padding: 25px 20px;
+        border-radius: 14px;
+    }
+
+    .card h2 {
+        font-size: 21px;
+    }
+
+    .button {
+        display: flex;
+        width: 100%;
+        margin-right: 0;
+        padding: 14px;
+    }
+
+    nav ul {
+        width: 100%;
+    }
+
+    nav ul li a {
+        font-size: 12px;
+        padding: 9px 10px;
+    }
+
+}
+
+/* ================= ACCESSIBILITY ================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
     }
 
 }
@@ -175,7 +335,7 @@ nav ul li a:hover{
 <nav>
 
 <div class="logo">
-🏠 KEJAHUNT
+🏠 KEJA<span>HUNT</span>
 </div>
 
 <ul>
@@ -206,55 +366,79 @@ nav ul li a:hover{
 
 <div class="container">
 
+<div class="dashboard-header">
+
 <h1 class="dashboard-title">
 House Hunter Dashboard
 </h1>
 
 <h2 class="welcome">
-Welcome, {{ user.username }} 👋
+Welcome, <span>{{ user.username }}</span> 👋
 </h2>
 
 <p class="role">
 Role: {{ user.role }}
 </p>
 
+</div>
+
 <div class="card">
 
-<h2>Browse Houses</h2>
+<h2>🏡 Browse Houses</h2>
 
 <p>
-Search and save houses from anywhere in Kenya.
+Find your next home with KEJAHUNT. Explore available rental
+properties across Kenya, save the ones you love, and connect
+with landlords to learn more about a property.
 </p>
 
 <a class="button properties" href="/properties">
-View Available Houses
+🏠 View Available Houses
 </a>
 
 <a class="button saved" href="{{ url_for('saved_properties') }}">
 ❤️ Saved Properties
 </a>
 
-<a class="button inbox"href="{{ url_for('my_messages') }}">
-    My Messages
+<a class="button inbox" href="{{ url_for('my_messages') }}">
+💬 My Messages
 </a>
 
 </div>
 
+<div class="dashboard-note">
+
+<h3>💡 Make your house hunt easier</h3>
+
+<p>
+Browse available properties, save interesting houses for later,
+and use your messages to keep track of conversations with landlords.
+Your next home could be waiting for you!
+</p>
+
 </div>
+
+</div>
+
+<footer>
+&copy; 2026 KEJAHUNT. Making house hunting simpler across Kenya.
+</footer>
 
 <script>
 
 const card = document.querySelector(".card");
 
-card.addEventListener("mouseenter",function(){
+// Preserve the original card-hover effect.
 
-    this.style.boxShadow="0 18px 35px rgba(0,0,0,.25)";
+card.addEventListener("mouseenter", function () {
+
+    this.style.boxShadow = "0 18px 35px rgba(0, 0, 0, 0.15)";
 
 });
 
-card.addEventListener("mouseleave",function(){
+card.addEventListener("mouseleave", function () {
 
-    this.style.boxShadow="0 8px 20px rgba(0,0,0,.12)";
+    this.style.boxShadow = "0 8px 25px rgba(15, 23, 42, 0.06)";
 
 });
 

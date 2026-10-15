@@ -1,185 +1,366 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KEJAHUNT</title>
+    <meta name="theme-color" content="#064e3b">
+
+    <title>KEJAHUNT | Find Your Next Home</title>
 
     <style>
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial, Helvetica, sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
-        body{
-
-            background:linear-gradient(135deg,#0f766e,#14532d);
-
-            display:flex;
-            justify-content:center;
-            align-items:center;
-
-            height:100vh;
-
-            overflow:hidden;
+        body {
+            background: linear-gradient(135deg, #064e3b, #0f766e, #14532d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        .container{
+        /* Background decoration */
 
-            background:white;
-
-            width:500px;
-
-            padding:50px;
-
-            border-radius:20px;
-
-            text-align:center;
-
-            box-shadow:0 20px 50px rgba(0,0,0,.3);
-
-            animation:fadeIn 1.2s ease;
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.07);
+            pointer-events: none;
         }
 
-        h1{
-
-            color:#14532d;
-
-            margin-bottom:15px;
-
-            font-size:40px;
-
-            animation:slideDown 1s ease;
+        body::before {
+            width: 400px;
+            height: 400px;
+            top: -150px;
+            left: -120px;
         }
 
-        p{
-
-            color:#555;
-
-            font-size:18px;
-
-            margin-bottom:35px;
+        body::after {
+            width: 350px;
+            height: 350px;
+            bottom: -130px;
+            right: -100px;
         }
 
-        button{
+        /* Main container */
 
-            width:100%;
-
-            padding:15px;
-
-            margin-top:15px;
-
-            border:none;
-
-            border-radius:10px;
-
-            font-size:18px;
-
-            cursor:pointer;
-
-            transition:.3s;
+        .container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 520px;
+            padding: 48px 45px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+            animation: fadeIn 0.8s ease;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-        .register{
+        /* Brand logo */
 
-            background:#16a34a;
-
-            color:white;
+        .logo {
+            width: 78px;
+            height: 78px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #059669, #065f46);
+            border-radius: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 38px;
+            box-shadow: 0 10px 25px rgba(5, 150, 105, 0.25);
+            transition: transform 0.3s ease;
         }
 
-        .register:hover{
-
-            background:#15803d;
-
-            transform:scale(1.05);
+        .logo:hover {
+            transform: translateY(-4px);
         }
 
-        .login{
+        /* Heading */
 
-            background:#2563eb;
-
-            color:white;
+        h1 {
+            color: #065f46;
+            margin-bottom: 14px;
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            animation: slideDown 0.8s ease;
+            transition: transform 0.3s ease;
         }
 
-        .login:hover{
-
-            background:#1d4ed8;
-
-            transform:scale(1.05);
+        h1 span {
+            color: #059669;
         }
 
-        @keyframes fadeIn{
+        /* Introductory text */
 
-            from{
-                opacity:0;
-                transform:translateY(30px);
+        p {
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .tagline {
+            color: #334155;
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* Feature highlights */
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .feature {
+            background: #ecfdf5;
+            color: #047857;
+            padding: 9px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #d1fae5;
+        }
+
+        /* Navigation buttons */
+
+        a {
+            display: block;
+            width: 100%;
+            text-decoration: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 13px;
+            border: none;
+            border-radius: 11px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease,
+                        box-shadow 0.3s ease,
+                        background 0.3s ease;
+        }
+
+        .register {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            box-shadow: 0 6px 15px rgba(5, 150, 105, 0.18);
+        }
+
+        .register:hover {
+            background: linear-gradient(135deg, #047857, #065f46);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 22px rgba(5, 150, 105, 0.3);
+        }
+
+        .login {
+            background: #f0fdf4;
+            color: #047857;
+            border: 1px solid #bbf7d0;
+        }
+
+        .login:hover {
+            background: #dcfce7;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(6, 95, 70, 0.12);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:focus-visible {
+            outline: 3px solid #34d399;
+            outline-offset: 4px;
+        }
+
+        /* Footer */
+
+        .footer {
+            border-top: 1px solid #e2e8f0;
+            margin-top: 30px;
+            padding-top: 18px;
+            color: #94a3b8;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .footer strong {
+            color: #047857;
+        }
+
+        /* Animations */
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
             }
 
-            to{
-                opacity:1;
-                transform:translateY(0);
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
-
         }
 
-        @keyframes slideDown{
-
-            from{
-                transform:translateY(-50px);
-                opacity:0;
+        @keyframes slideDown {
+            from {
+                transform: translateY(-25px);
+                opacity: 0;
             }
 
-            to{
-                transform:translateY(0);
-                opacity:1;
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Mobile responsiveness */
+
+        @media (max-width: 480px) {
+            body {
+                padding: 16px;
             }
 
+            .container {
+                padding: 34px 22px;
+                border-radius: 19px;
+            }
+
+            .logo {
+                width: 65px;
+                height: 65px;
+                font-size: 32px;
+                border-radius: 18px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .tagline {
+                font-size: 15px;
+            }
+
+            .description {
+                font-size: 13px;
+            }
+
+            .features {
+                gap: 7px;
+            }
+
+            .feature {
+                font-size: 11px;
+                padding: 8px 10px;
+            }
+
+            button {
+                padding: 14px;
+                font-size: 14px;
+            }
+        }
+
+        /* Accessibility */
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+            }
         }
 
     </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-    <h1 id="title">🏠 KEJAHUNT</h1>
+    <div class="logo" aria-hidden="true">🏠</div>
 
-    <p>Your smart house-hunting platform in Kenya.</p>
+    <h1 id="title">KEJA<span>HUNT</span></h1>
+
+    <p class="tagline">
+        Find a place to call home.
+    </p>
+
+    <p class="description">
+        Your smart house-hunting platform in Kenya.
+        Discover rental properties, explore locations,
+        and connect with landlords with ease.
+    </p>
+
+    <div class="features">
+        <span class="feature">⌂ Find Houses</span>
+        <span class="feature">✓ Save Favourites</span>
+        <span class="feature">↗ Connect with Landlords</span>
+    </div>
 
     <a href="/register">
-        <button class="register">
-            Create Account
+        <button type="button" class="register">
+            Create Your Account
         </button>
     </a>
 
     <a href="/login">
-        <button class="login">
+        <button type="button" class="login">
             Login to Dashboard
         </button>
     </a>
+
+    <div class="footer">
+        Making house hunting simpler across Kenya.
+        <br>
+        &copy; 2026 <strong>KEJAHUNT</strong>. All rights reserved.
+    </div>
 
 </div>
 
 <script>
 
-const title = document.getElementById("title");
+    const title = document.getElementById("title");
 
-setInterval(function(){
+    // Preserve the original heading animation.
 
-    title.style.transform="scale(1.05)";
+    setInterval(function () {
 
-    setTimeout(function(){
+        title.style.transform = "scale(1.04)";
 
-        title.style.transform="scale(1)";
+        setTimeout(function () {
+            title.style.transform = "scale(1)";
+        }, 300);
 
-    },300);
-
-},2500);
+    }, 2500);
 
 </script>
 
