@@ -40,7 +40,11 @@ class Property(db.Model):
         db.ForeignKey('user.id'),
         nullable=False
     )
-
+status = db.Column(
+    db.String(20),
+    nullable=False,
+    default="Available"
+)
 
 # =====================
 # FAVORITE MODEL

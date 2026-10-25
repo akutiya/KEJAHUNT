@@ -3,9 +3,8 @@ import os
 import secrets
 
 from werkzeug.utils import secure_filename
-from flask import Flask, render_template, request, redirect, url_for, jsonify
-from sqlalchemy import or_
-from sqlalchemy import or_, and_
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from sqlalchemy import or_, text
 
 from flask_login import (
     LoginManager,
@@ -25,7 +24,6 @@ from models import db, User, Property, Favorite, Message
 app = Flask(__name__)
 
 # CONFIG
-
 app.config['SECRET_KEY'] = 'kejahunt-secret-key'
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -44,7 +42,6 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 db.init_app(app)
 
 # LOGIN MANAGER
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
@@ -55,14 +52,62 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-# CREATE DB
-
+# CREATE DATABASE AND PROPERTY STATUS TABLE
 with app.app_context():
     db.create_all()
 
+    db.session.execute(text("""
+        CREATE TABLE IF NOT EXISTS property_listing_status (
+            property_id INTEGER PRIMARY KEY,
+            status VARCHAR(20) NOT NULL DEFAULT 'Available'
+        )
+    """))
+    db.session.commit()
+
+
+def get_property_status(property_id):
+    """Return a property's saved status."""
+    row = db.session.execute(
+        text("""
+            SELECT status
+            FROM property_listing_status
+            WHERE property_id = :pid
+        """),
+        {"pid": property_id}
+    ).first()
+
+    if row and row[0] in ("Available", "Rented"):
+        return row[0]
+
+    return "Available"
+
+
+def set_property_status(property_id, status):
+    """Save or update a property's availability status."""
+    db.session.execute(
+        text("""
+            INSERT INTO property_listing_status (property_id, status)
+            VALUES (:pid, :status)
+            ON CONFLICT(property_id)
+            DO UPDATE SET status = excluded.status
+        """),
+        {
+            "pid": property_id,
+            "status": status
+        }
+    )
+    db.session.commit()
+
+
+def attach_property_status(properties):
+    """Attach the saved status to each property for template display."""
+    for prop in properties:
+        prop.status = get_property_status(prop.id)
+
+    return properties
+
 
 # HOME
-
 @app.route('/')
 def home():
     if current_user.is_authenticated:
@@ -72,14 +117,16 @@ def home():
 
 
 # REGISTER
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
+        username = request.form['username'].strip()
+        email = request.form['email'].strip()
         password = request.form['password']
         role = request.form['role']
+
+        if role not in ('user', 'landlord'):
+            return "Invalid account role.", 400
 
         if User.query.filter_by(email=email).first():
             return "Email already exists."
@@ -105,11 +152,10 @@ def register():
 
 
 # LOGIN
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
+        email = request.form['email'].strip()
         password = request.form['password']
 
         user = User.query.filter_by(email=email).first()
@@ -124,7 +170,6 @@ def login():
 
 
 # DASHBOARD ROUTER
-
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -135,7 +180,6 @@ def dashboard():
 
 
 # USER DASHBOARD
-
 @app.route('/user_dashboard')
 @login_required
 def user_dashboard():
@@ -149,7 +193,6 @@ def user_dashboard():
 
 
 # LANDLORD DASHBOARD
-
 @app.route('/landlord_dashboard')
 @login_required
 def landlord_dashboard():
@@ -163,7 +206,6 @@ def landlord_dashboard():
 
 
 # LOGOUT
-
 @app.route('/logout')
 @login_required
 def logout():
@@ -171,27 +213,28 @@ def logout():
     return redirect(url_for('home'))
 
 
-# =========================
-# 🏠 PROPERTY SYSTEM STARTS
-# =========================
+# =====================================================
+# PROPERTY SYSTEM
+# =====================================================
 
 # ADD PROPERTY
-
 @app.route('/add_property', methods=['GET', 'POST'])
 @login_required
 def add_property():
     if current_user.role != "landlord":
-        return "Only landlords can add properties."
+        return "Only landlords can add properties.", 403
 
     if request.method == 'POST':
         image = request.files.get('image')
         filename = None
 
         if image and image.filename:
-            filename = (
-                str(uuid.uuid4()) + "_" +
-                secure_filename(image.filename)
-            )
+            safe_name = secure_filename(image.filename)
+
+            if not safe_name:
+                return "Invalid image filename.", 400
+
+            filename = str(uuid.uuid4()) + "_" + safe_name
 
             image.save(
                 os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -212,45 +255,330 @@ def add_property():
         db.session.add(new_property)
         db.session.commit()
 
+        # New listings are Available by default.
+        set_property_status(new_property.id, "Available")
+
+        flash("Property added successfully.", "success")
         return redirect(url_for('my_properties'))
 
     return render_template('add_property.html')
 
 
-# LANDLORD PROPERTIES
+# =====================================================
+# LANDLORD PROPERTY MANAGEMENT
+# =====================================================
 
 @app.route('/my_properties')
 @login_required
 def my_properties():
     if current_user.role != "landlord":
-        return "Unauthorized"
+        return redirect(url_for("dashboard"))
 
-    props = Property.query.filter_by(
+    search = request.args.get("q", "").strip()
+    status_filter = request.args.get("status", "").strip()
+
+    query = Property.query.filter_by(
+        landlord_id=current_user.id
+    )
+
+    if search:
+        query = query.filter(
+            or_(
+                Property.title.contains(search),
+                Property.location.contains(search),
+                Property.description.contains(search)
+            )
+        )
+
+    properties_list = query.order_by(
+        Property.id.desc()
+    ).all()
+
+    attach_property_status(properties_list)
+
+    if status_filter in ("Available", "Rented"):
+        properties_list = [
+            prop for prop in properties_list
+            if prop.status == status_filter
+        ]
+
+    all_properties = Property.query.filter_by(
         landlord_id=current_user.id
     ).all()
 
+    attach_property_status(all_properties)
+
+    total_count = len(all_properties)
+
+    available_count = sum(
+        1 for prop in all_properties
+        if prop.status == "Available"
+    )
+
+    rented_count = sum(
+        1 for prop in all_properties
+        if prop.status == "Rented"
+    )
+
     return render_template(
-        'my_properties.html',
-        properties=props
+        "my_properties.html",
+        properties=properties_list,
+        search=search,
+        status_filter=status_filter,
+        total_count=total_count,
+        available_count=available_count,
+        rented_count=rented_count
     )
 
 
-# =========================
-# 🔍 SEARCH + PUBLIC LISTING
-# =========================
+# EDIT A PROPERTY
+@app.route('/edit_property/<int:property_id>', methods=['GET', 'POST'])
+@login_required
+def edit_property(property_id):
+    if current_user.role != "landlord":
+        return redirect(url_for("dashboard"))
+
+    prop = Property.query.filter_by(
+        id=property_id,
+        landlord_id=current_user.id
+    ).first_or_404()
+
+    prop.status = get_property_status(prop.id)
+
+    if request.method == "POST":
+        title = request.form.get("title", "").strip()
+        description = request.form.get("description", "").strip()
+        price = request.form.get("price", "").strip()
+        location = request.form.get("location", "").strip()
+        phone = request.form.get("phone", "").strip()
+        bedrooms = request.form.get("bedrooms", "").strip()
+        bathrooms = request.form.get("bathrooms", "").strip()
+        property_type = request.form.get("property_type", "").strip()
+        status = request.form.get("status", "Available").strip()
+
+        if not all((title, description, price, location, phone)):
+            flash("Please complete all required fields.", "error")
+            return redirect(
+                url_for("edit_property", property_id=prop.id)
+            )
+
+        if status not in ("Available", "Rented"):
+            status = "Available"
+
+        image = request.files.get("image")
+        new_filename = None
+
+        # Only replace the existing image when a new image is selected.
+        if image and image.filename:
+            allowed_extensions = {"png", "jpg", "jpeg", "webp"}
+
+            if "." not in image.filename:
+                flash(
+                    "Please upload a PNG, JPG, JPEG, or WEBP image.",
+                    "error"
+                )
+                return redirect(
+                    url_for("edit_property", property_id=prop.id)
+                )
+
+            extension = image.filename.rsplit(".", 1)[1].lower()
+
+            if extension not in allowed_extensions:
+                flash(
+                    "Please upload a PNG, JPG, JPEG, or WEBP image.",
+                    "error"
+                )
+                return redirect(
+                    url_for("edit_property", property_id=prop.id)
+                )
+
+            safe_name = secure_filename(image.filename)
+
+            if not safe_name:
+                flash("The image filename is invalid.", "error")
+                return redirect(
+                    url_for("edit_property", property_id=prop.id)
+                )
+
+            new_filename = str(uuid.uuid4()) + "_" + safe_name
+
+            image.save(
+                os.path.join(
+                    app.config["UPLOAD_FOLDER"],
+                    new_filename
+                )
+            )
+
+        old_filename = prop.image_file
+
+        prop.title = title
+        prop.description = description
+        prop.price = price
+        prop.location = location
+        prop.phone = phone
+        prop.bedrooms = bedrooms or None
+        prop.bathrooms = bathrooms or None
+
+        if hasattr(prop, "property_type"):
+            prop.property_type = property_type or None
+
+        if new_filename:
+            prop.image_file = new_filename
+
+        try:
+            db.session.commit()
+            set_property_status(prop.id, status)
+
+        except Exception:
+            db.session.rollback()
+
+            if new_filename:
+                new_path = os.path.join(
+                    app.config["UPLOAD_FOLDER"],
+                    new_filename
+                )
+
+                if os.path.isfile(new_path):
+                    os.remove(new_path)
+
+            flash(
+                "The property could not be updated. "
+                "Please check the details and try again.",
+                "error"
+            )
+
+            return redirect(
+                url_for("edit_property", property_id=prop.id)
+            )
+
+        # Remove the old photo only after the new one has been saved.
+        if new_filename and old_filename:
+            old_path = os.path.join(
+                app.config["UPLOAD_FOLDER"],
+                old_filename
+            )
+
+            if os.path.isfile(old_path):
+                try:
+                    os.remove(old_path)
+                except OSError:
+                    pass
+
+        flash("Property updated successfully.", "success")
+        return redirect(url_for("my_properties"))
+
+    return render_template(
+        "edit_property.html",
+        property=prop
+    )
+
+
+# MARK PROPERTY AS AVAILABLE OR RENTED
+@app.route('/property_status/<int:property_id>', methods=['POST'])
+@login_required
+def property_status(property_id):
+    if current_user.role != "landlord":
+        return redirect(url_for("dashboard"))
+
+    prop = Property.query.filter_by(
+        id=property_id,
+        landlord_id=current_user.id
+    ).first_or_404()
+
+    status = request.form.get("status", "").strip()
+
+    if status not in ("Available", "Rented"):
+        flash("Invalid property status.", "error")
+    else:
+        set_property_status(prop.id, status)
+        flash("Property status updated.", "success")
+
+    return redirect(url_for("my_properties"))
+
+
+# DELETE PROPERTY
+@app.route('/delete_property/<int:property_id>', methods=['POST'])
+@login_required
+def delete_property(property_id):
+    if current_user.role != "landlord":
+        return redirect(url_for("dashboard"))
+
+    prop = Property.query.filter_by(
+        id=property_id,
+        landlord_id=current_user.id
+    ).first_or_404()
+
+    image_filename = prop.image_file
+
+    try:
+        # Remove saved-property records associated with this listing.
+        Favorite.query.filter_by(
+            property_id=prop.id
+        ).delete(synchronize_session=False)
+
+        # Do not delete the property if related messages prevent deletion.
+        db.session.delete(prop)
+        db.session.commit()
+
+        db.session.execute(
+            text("""
+                DELETE FROM property_listing_status
+                WHERE property_id = :pid
+            """),
+            {"pid": property_id}
+        )
+        db.session.commit()
+
+    except Exception:
+        db.session.rollback()
+
+        flash(
+            "This property could not be deleted. It may be linked "
+            "to existing messages. Your listing may need further review.",
+            "error"
+        )
+
+        return redirect(url_for("my_properties"))
+
+    if image_filename:
+        image_path = os.path.join(
+            app.config["UPLOAD_FOLDER"],
+            image_filename
+        )
+
+        if os.path.isfile(image_path):
+            try:
+                os.remove(image_path)
+            except OSError:
+                pass
+
+    flash("Property deleted successfully.", "success")
+    return redirect(url_for("my_properties"))
+
+
+# =====================================================
+# PUBLIC PROPERTY SEARCH AND LISTINGS
+# =====================================================
 
 @app.route('/properties')
 def properties():
-    query = request.args.get('q')
+    query = request.args.get('q', '').strip()
+
+    property_query = Property.query
 
     if query:
-        props = Property.query.filter(
-            Property.title.contains(query) |
-            Property.location.contains(query) |
-            Property.description.contains(query)
-        ).all()
-    else:
-        props = Property.query.all()
+        property_query = property_query.filter(
+            or_(
+                Property.title.contains(query),
+                Property.location.contains(query),
+                Property.description.contains(query)
+            )
+        )
+
+    props = property_query.all()
+
+    # Add availability to the public listing objects too.
+    attach_property_status(props)
 
     return render_template(
         'properties.html',
@@ -260,10 +588,10 @@ def properties():
 
 
 # PROPERTY DETAILS
-
 @app.route('/property/<int:property_id>')
 def property_details(property_id):
     prop = Property.query.get_or_404(property_id)
+    prop.status = get_property_status(prop.id)
 
     return render_template(
         'property_details.html',
@@ -271,14 +599,15 @@ def property_details(property_id):
     )
 
 
+# SAVE PROPERTY
 @app.route('/save/<int:property_id>')
 @login_required
 def save_property(property_id):
-    property = Property.query.get_or_404(property_id)
+    prop = Property.query.get_or_404(property_id)
 
     existing = Favorite.query.filter_by(
         user_id=current_user.id,
-        property_id=property.id
+        property_id=prop.id
     ).first()
 
     if existing:
@@ -286,7 +615,7 @@ def save_property(property_id):
 
     favorite = Favorite(
         user_id=current_user.id,
-        property_id=property.id
+        property_id=prop.id
     )
 
     db.session.add(favorite)
@@ -295,6 +624,7 @@ def save_property(property_id):
     return redirect(url_for('properties'))
 
 
+# VIEW SAVED PROPERTIES
 @app.route('/saved')
 @login_required
 def saved_properties():
@@ -308,6 +638,7 @@ def saved_properties():
     )
 
 
+# REMOVE SAVED PROPERTY
 @app.route('/unsave/<int:property_id>')
 @login_required
 def unsave_property(property_id):
@@ -323,26 +654,29 @@ def unsave_property(property_id):
     return redirect(url_for('saved_properties'))
 
 
-# SEND MESSAGE TO LANDLORD
+# =====================================================
+# MESSAGING SYSTEM
+# =====================================================
 
+# SEND MESSAGE TO LANDLORD
 @app.route("/message/<int:property_id>", methods=["POST"])
 @login_required
 def send_message(property_id):
-    property = Property.query.get_or_404(property_id)
+    prop = Property.query.get_or_404(property_id)
 
-    if current_user.id == property.landlord_id:
+    if current_user.id == prop.landlord_id:
         return "You cannot message yourself about your own property.", 400
 
-    text = request.form.get("message", "").strip()
+    message_text = request.form.get("message", "").strip()
 
-    if not text:
+    if not message_text:
         return "Message cannot be empty.", 400
 
     msg = Message(
         sender_id=current_user.id,
-        receiver_id=property.landlord_id,
-        property_id=property.id,
-        message=text
+        receiver_id=prop.landlord_id,
+        property_id=prop.id,
+        message=message_text
     )
 
     db.session.add(msg)
@@ -350,13 +684,12 @@ def send_message(property_id):
 
     return redirect(url_for(
         "property_details",
-        property_id=property.id
+        property_id=prop.id
     ))
 
 
 # LANDLORD MESSAGES
-# Conversations are grouped by person, not by property.
-
+# Conversations are grouped by contact, not by property.
 @app.route("/messages")
 @login_required
 def messages():
@@ -408,20 +741,18 @@ def messages():
 
 
 # REPLY WITHIN THE SAME CONVERSATION
-
 @app.route("/reply/<int:id>", methods=["GET", "POST"])
 @login_required
 def reply(id):
     msg = Message.query.get_or_404(id)
 
-    # Only the participants in this conversation can access it.
     if current_user.id not in (msg.sender_id, msg.receiver_id):
         return "Unauthorized", 403
 
     if request.method == "POST":
-        text = request.form.get("message", "").strip()
+        message_text = request.form.get("message", "").strip()
 
-        if not text:
+        if not message_text:
             return jsonify({
                 "success": False,
                 "error": "Please enter a message."
@@ -436,7 +767,7 @@ def reply(id):
             sender_id=current_user.id,
             receiver_id=recipient_id,
             property_id=msg.property_id,
-            message=text
+            message=message_text
         )
 
         db.session.add(new_message)
@@ -457,7 +788,6 @@ def reply(id):
 
 
 # HOUSE HUNTER MESSAGES
-
 @app.route("/my_messages")
 @login_required
 def my_messages():
@@ -474,10 +804,7 @@ def my_messages():
     )
 
 
-# =========================
-# 📥 INBOX
-# =========================
-
+# INBOX ROUTER
 @app.route("/inbox")
 @login_required
 def inbox():
@@ -487,27 +814,28 @@ def inbox():
     return redirect(url_for("my_messages"))
 
 
-# =========================
-# 📱 MOBILE API ROUTES
-# =========================
+# =====================================================
+# MOBILE API ROUTES
+# =====================================================
 
+# API REGISTER
 @app.route('/api/register', methods=['POST'])
 def api_register():
     data = request.get_json()
-
-    print("Register data received:", data)
 
     if not data:
         return jsonify({'message': 'No data received'}), 400
 
     email = data.get('email')
     full_name = data.get('full_name')
-    phone = data.get('phone')
     password = data.get('password')
     role = data.get('role')
 
     if not email or not full_name or not password or not role:
         return jsonify({'message': 'Missing required fields'}), 400
+
+    if role not in ('user', 'landlord'):
+        return jsonify({'message': 'Invalid role'}), 400
 
     if User.query.filter_by(email=email).first():
         return jsonify({'message': 'Email already exists'}), 400
@@ -538,11 +866,10 @@ def api_register():
     }), 201
 
 
+# API LOGIN
 @app.route('/api/login', methods=['POST'])
 def api_login():
     data = request.get_json()
-
-    print("Login data received:", data)
 
     if not data:
         return jsonify({'message': 'No data received'}), 400
@@ -568,31 +895,37 @@ def api_login():
     }), 200
 
 
+# API GET PROPERTIES
 @app.route('/api/properties', methods=['GET'])
 def get_properties():
-    properties = Property.query.all()
+    props = Property.query.all()
     result = []
 
-    for p in properties:
-        landlord = User.query.get(p.landlord_id)
+    for prop in props:
+        landlord = User.query.get(prop.landlord_id)
 
         result.append({
-            'id': p.id,
-            'title': p.title,
-            'location': p.location,
-            'price': str(p.price),
-            'description': p.description,
-            'image_url': p.image_file,
+            'id': prop.id,
+            'title': prop.title,
+            'location': prop.location,
+            'price': str(prop.price),
+            'description': prop.description,
+            'image_url': prop.image_file,
             'landlord_name': landlord.username if landlord else 'Unknown',
-            'landlord_id': p.landlord_id
+            'landlord_id': prop.landlord_id,
+            'status': get_property_status(prop.id)
         })
 
     return jsonify(result)
 
 
+# API POST PROPERTY
 @app.route('/api/properties', methods=['POST'])
 def api_post_property():
-    token = request.headers.get('Authorization', '').replace('Bearer ', '')
+    token = request.headers.get(
+        'Authorization', ''
+    ).replace('Bearer ', '')
+
     user = User.query.filter_by(token=token).first()
 
     if not user or user.role != 'landlord':
@@ -604,20 +937,26 @@ def api_post_property():
     description = request.form.get('description')
     property_type = request.form.get('property_type')
 
+    if not all((title, location, price, description)):
+        return jsonify({
+            'message': 'Title, location, price and description are required'
+        }), 400
+
     filename = None
 
-    if 'image' in request.files:
-        image = request.files['image']
+    image = request.files.get('image')
 
-        if image.filename != '':
-            filename = (
-                str(uuid.uuid4()) + "_" +
-                secure_filename(image.filename)
-            )
+    if image and image.filename:
+        safe_name = secure_filename(image.filename)
 
-            image.save(
-                os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            )
+        if not safe_name:
+            return jsonify({'message': 'Invalid image filename'}), 400
+
+        filename = str(uuid.uuid4()) + "_" + safe_name
+
+        image.save(
+            os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        )
 
     new_property = Property(
         title=title,
@@ -635,8 +974,14 @@ def api_post_property():
     db.session.add(new_property)
     db.session.commit()
 
-    return jsonify({'message': 'Property posted successfully'}), 201
+    set_property_status(new_property.id, "Available")
+
+    return jsonify({
+        'message': 'Property posted successfully',
+        'id': new_property.id
+    }), 201
 
 
+# RUN APPLICATION
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)

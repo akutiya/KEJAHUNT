@@ -1,337 +1,648 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>My Properties - KEJAHUNT</title>
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    background:#f4f7fb;
-}
-
-/* ================= NAVBAR ================= */
-
-nav{
-
-    background:#14532d;
-    color:white;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:18px 40px;
-    box-shadow:0 4px 12px rgba(0,0,0,.15);
-
-}
-
-.logo{
-
-    font-size:28px;
-    font-weight:bold;
-
-}
-
-nav ul{
-
-    display:flex;
-    list-style:none;
-
-}
-
-nav ul li{
-
-    margin-left:25px;
-
-}
-
-nav ul li a{
-
-    color:white;
-    text-decoration:none;
-    font-weight:bold;
-    transition:.3s;
-
-}
-
-nav ul li a:hover{
-
-    color:#fde047;
-
-}
-
-/* ================= PAGE ================= */
-
-.container{
-
-    width:90%;
-    margin:40px auto;
-
-}
-
-.top{
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    margin-bottom:30px;
-
-}
-
-h1{
-
-    color:#14532d;
-
-}
-
-.add-btn{
-
-    background:#16a34a;
-    color:white;
-    text-decoration:none;
-    padding:12px 20px;
-    border-radius:8px;
-    transition:.3s;
-
-}
-
-.add-btn:hover{
-
-    background:#15803d;
-
-}
-
-/* ================= PROPERTY CARDS ================= */
-
-.cards{
-
-    display:flex;
-    flex-wrap:wrap;
-    gap:25px;
-
-}
-
-.card{
-
-    width:320px;
-    background:white;
-    border-radius:15px;
-    overflow:hidden;
-    box-shadow:0 8px 20px rgba(0,0,0,.12);
-    transition:.3s;
-
-}
-
-.card:hover{
-
-    transform:translateY(-8px);
-
-}
-
-.card img{
-
-    width:100%;
-    height:220px;
-    object-fit:cover;
-
-}
-
-.no-image{
-
-    height:220px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#eeeeee;
-    color:#777;
-
-}
-
-.info{
-
-    padding:20px;
-
-}
-
-.info h2{
-
-    color:#14532d;
-    margin-bottom:12px;
-
-}
-
-.info p{
-
-    margin:8px 0;
-    color:#555;
-
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:768px){
-
-nav{
-
-    flex-direction:column;
-
-}
-
-nav ul{
-
-    flex-direction:column;
-    margin-top:15px;
-    text-align:center;
-
-}
-
-nav ul li{
-
-    margin:10px 0;
-
-}
-
-.cards{
-
-    justify-content:center;
-
-}
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Properties | KEJAHUNT</title>
+
+    <style>
+        :root {
+            --green: #14532d;
+            --green-light: #dcfce7;
+            --background: #f4f7fb;
+            --text: #172033;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --white: #ffffff;
+            --red: #dc2626;
+            --shadow: 0 8px 28px rgba(15, 23, 42, .06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        nav {
+            background: linear-gradient(120deg, #0f766e, var(--green));
+            color: white;
+            padding: 17px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        nav a:hover {
+            color: #fde047;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: 34px auto;
+            padding: 0 22px;
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .eyebrow {
+            color: #0f766e;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+            margin-bottom: 9px;
+        }
+
+        h1 {
+            font-size: clamp(26px, 4vw, 36px);
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 17px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(.97);
+        }
+
+        .btn-primary {
+            background: var(--green);
+            color: white;
+        }
+
+        .btn-light {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 17px;
+            margin-bottom: 27px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        .stat-note {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .toolbar {
+            background: white;
+            padding: 17px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 23px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar input,
+        .toolbar select {
+            min-width: 0;
+            flex: 1;
+            padding: 12px 13px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: white;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .toolbar input:focus,
+        .toolbar select:focus {
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px #0f766e18;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin: 27px 0 17px;
+        }
+
+        .section-heading h2 {
+            font-size: 20px;
+        }
+
+        .count {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .property-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            min-width: 0;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .property-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 35px rgba(15, 23, 42, .10);
+        }
+
+        .property-image {
+            height: 205px;
+            background: #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .no-image {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            color: #94a3b8;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 13px;
+            left: 13px;
+            border-radius: 30px;
+            padding: 7px 11px;
+            font-size: 11px;
+            font-weight: 800;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-badge.rented {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .property-content {
+            padding: 19px;
+        }
+
+        .property-title {
+            font-size: 18px;
+            font-weight: 800;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .location {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 13px;
+        }
+
+        .price {
+            font-size: 21px;
+            font-weight: 800;
+            color: var(--green);
+            margin-bottom: 15px;
+        }
+
+        .price span {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 13px 0;
+            margin-bottom: 14px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature {
+            color: #475569;
+            background: #f8fafc;
+            border-radius: 7px;
+            padding: 7px 9px;
+            font-size: 12px;
+        }
+
+        .card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+        }
+
+        .card-actions .btn {
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .status-form {
+            margin-top: 10px;
+        }
+
+        .status-form button {
+            width: 100%;
+        }
+
+        .delete-form {
+            margin-top: 9px;
+        }
+
+        .delete-form button {
+            width: 100%;
+        }
+
+        .empty-state {
+            background: white;
+            border: 1px dashed #cbd5e1;
+            border-radius: 18px;
+            text-align: center;
+            padding: 55px 20px;
+        }
+
+        .empty-icon {
+            font-size: 44px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            font-size: 21px;
+            margin-bottom: 9px;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            margin: 0 auto 20px;
+            line-height: 1.6;
+            max-width: 430px;
+        }
+
+        .flash {
+            border-radius: 10px;
+            padding: 13px 16px;
+            margin-bottom: 17px;
+            font-size: 14px;
+        }
+
+        .flash.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .flash.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            padding: 35px 15px;
+        }
+
+        @media (max-width: 950px) {
+            .property-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 620px) {
+            nav {
+                padding: 16px 20px;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .container {
+                margin-top: 25px;
+                padding: 0 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 17px;
+            }
+
+            .property-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .toolbar input,
+            .toolbar select {
+                width: 100%;
+                flex: auto;
+            }
+
+            .page-heading .btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
-
 <nav>
+    <div class="brand">🏡 KEJAHUNT</div>
 
-<div class="logo">
-
-🏠 KEJAHUNT
-
-</div>
-
-<ul>
-
-<li>
-<a href="/landlord_dashboard">Dashboard</a>
-</li>
-
-<li>
-<a href="/add_property">Add Property</a>
-</li>
-
-<li>
-<a href="/properties">Browse Properties</a>
-</li>
-
-<li>
-<a href="/logout">Logout</a>
-</li>
-
-</ul>
-
+    <div class="nav-links">
+        <a href="{{ url_for('landlord_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('add_property') }}">Add Property</a>
+        <a href="{{ url_for('my_properties') }}">My Listings</a>
+        <a href="{{ url_for('messages') }}">Inbox</a>
+        <a href="{{ url_for('properties') }}">Browse Houses</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
 </nav>
 
-<div class="container">
+<main class="container">
+    {% with notices = get_flashed_messages(with_categories=true) %}
+        {% for category, notice in notices %}
+            <div class="flash {{ category }}">{{ notice }}</div>
+        {% endfor %}
+    {% endwith %}
 
-<div class="top">
+    <section class="page-heading">
+        <div>
+            <div class="eyebrow">Landlord workspace</div>
+            <h1>My Property Listings</h1>
+            <p class="subtitle">
+                Manage your houses, update listing details, and keep availability current.
+            </p>
+        </div>
 
-<h1>
+        <a class="btn btn-primary" href="{{ url_for('add_property') }}">
+            + Add New Property
+        </a>
+    </section>
 
-🏠 My Listings
+    <section class="stats">
+        <div class="stat-card">
+            <div class="stat-label">Total listings</div>
+            <div class="stat-number">{{ total_count }}</div>
+            <div class="stat-note">Properties in your account</div>
+        </div>
 
-</h1>
+        <div class="stat-card">
+            <div class="stat-label">Available houses</div>
+            <div class="stat-number">{{ available_count }}</div>
+            <div class="stat-note">Currently available to rent</div>
+        </div>
 
-<a class="add-btn" href="/add_property">
+        <div class="stat-card">
+            <div class="stat-label">Rented houses</div>
+            <div class="stat-number">{{ rented_count }}</div>
+            <div class="stat-note">Marked as rented</div>
+        </div>
+    </section>
 
-➕ Add New Property
+    <form class="toolbar" method="GET" action="{{ url_for('my_properties') }}">
+        <input
+            type="search"
+            name="q"
+            placeholder="Search by house name, location, or description..."
+            value="{{ search }}"
+        >
 
-</a>
+        <select name="status">
+            <option value="">All statuses</option>
+            <option value="Available" {% if status_filter == 'Available' %}selected{% endif %}>
+                Available
+            </option>
+            <option value="Rented" {% if status_filter == 'Rented' %}selected{% endif %}>
+                Rented
+            </option>
+        </select>
 
-</div>
+        <button class="btn btn-primary" type="submit">Search</button>
+        <a class="btn btn-light" href="{{ url_for('my_properties') }}">Reset</a>
+    </form>
 
-<div class="cards">
+    <div class="section-heading">
+        <h2>Your listings</h2>
+        <span class="count">{{ properties|length }} shown</span>
+    </div>
 
-{% for p in properties %}
+    {% if properties %}
+        <section class="property-grid">
+            {% for p in properties %}
+                <article class="property-card">
+                    <div class="property-image">
+                        {% if p.image_file %}
+                            <img
+                                src="{{ url_for('static', filename='uploads/' + p.image_file) }}"
+                                alt="{{ p.title }}"
+                                loading="lazy"
+                            >
+                        {% else %}
+                            <div class="no-image">🏠</div>
+                        {% endif %}
 
-<div class="card">
+                        <span class="status-badge {% if p.status == 'Rented' %}rented{% endif %}">
+                            {{ p.status or 'Available' }}
+                        </span>
+                    </div>
 
-{% if p.image_file %}
+                    <div class="property-content">
+                        <h3 class="property-title">{{ p.title }}</h3>
 
-<img src="{{ url_for('static', filename='uploads/' + p.image_file) }}">
+                        <p class="location">📍 {{ p.location }}</p>
 
-{% else %}
+                        <div class="price">
+                            KES {{ p.price }}
+                            <span>/ month</span>
+                        </div>
 
-<div class="no-image">
+                        <div class="features">
+                            <span class="feature">🛏 {{ p.bedrooms or '—' }} bedrooms</span>
+                            <span class="feature">🚿 {{ p.bathrooms or '—' }} bathrooms</span>
+                        </div>
 
-No Image Available
+                        <div class="card-actions">
+                            <a
+                                class="btn btn-primary"
+                                href="{{ url_for('edit_property', property_id=p.id) }}"
+                            >
+                                ✏️ Edit
+                            </a>
 
-</div>
+                            <a
+                                class="btn btn-light"
+                                href="{{ url_for('property_details', property_id=p.id) }}"
+                            >
+                                View listing
+                            </a>
+                        </div>
 
-{% endif %}
+                        <form
+                            class="status-form"
+                            method="POST"
+                            action="{{ url_for('property_status', property_id=p.id) }}"
+                        >
+                            <input
+                                type="hidden"
+                                name="status"
+                                value="{{ 'Rented' if p.status != 'Rented' else 'Available' }}"
+                            >
 
-<div class="info">
+                            <button class="btn btn-light" type="submit">
+                                {% if p.status == 'Rented' %}
+                                    Mark as Available
+                                {% else %}
+                                    Mark as Rented
+                                {% endif %}
+                            </button>
+                        </form>
 
-<h2>{{ p.title }}</h2>
+                        <form
+                            class="delete-form"
+                            method="POST"
+                            action="{{ url_for('delete_property', property_id=p.id) }}"
+                            onsubmit="return confirm('Delete this property permanently? This cannot be undone.');"
+                        >
+                            <button class="btn btn-danger" type="submit">
+                                🗑 Delete listing
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+    {% else %}
+        <section class="empty-state">
+            <div class="empty-icon">🏘️</div>
+            <h3>No properties found</h3>
+            <p>
+                {% if search or status_filter %}
+                    Try a different search or status filter.
+                {% else %}
+                    You haven't added any properties yet. Add your first listing to get started.
+                {% endif %}
+            </p>
+            {% if search or status_filter %}
+                <a class="btn btn-light" href="{{ url_for('my_properties') }}">Clear filters</a>
+            {% else %}
+                <a class="btn btn-primary" href="{{ url_for('add_property') }}">Add your first property</a>
+            {% endif %}
+        </section>
+    {% endif %}
+</main>
 
-<p>{{ p.description }}</p>
-
-<p><b>💰 Price:</b> KES {{ p.price }}</p>
-
-<p><b>📍 Location:</b> {{ p.location }}</p>
-
-<p><b>🛏 Bedrooms:</b> {{ p.bedrooms }}</p>
-
-<p><b>🛁 Bathrooms:</b> {{ p.bathrooms }}</p>
-
-</div>
-
-</div>
-
-{% else %}
-
-<h2>You haven't listed any properties yet.</h2>
-
-{% endfor %}
-
-</div>
-
-</div>
-
-<script>
-
-const cards=document.querySelectorAll(".card");
-
-cards.forEach(function(card){
-
-card.addEventListener("mouseenter",function(){
-
-this.style.boxShadow="0 18px 35px rgba(0,0,0,.25)";
-
-});
-
-card.addEventListener("mouseleave",function(){
-
-this.style.boxShadow="0 8px 20px rgba(0,0,0,.12)";
-
-});
-
-});
-
-</script>
-
+<footer>© 2026 KEJAHUNT · Find a place to call home.</footer>
 </body>
 </html>
