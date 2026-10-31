@@ -1,473 +1,909 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>All Properties - KEJAHUNT</title>
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    background:#f5f7fa;
-    padding:30px;
-}
-
-/* ================= NAVBAR ================= */
-
-nav{
-
-    background:#14532d;
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:18px 35px;
-
-    border-radius:12px;
-
-    margin-bottom:35px;
-
-    box-shadow:0 5px 15px rgba(0,0,0,.15);
-
-}
-
-.logo{
-
-    color:white;
-
-    font-size:28px;
-
-    font-weight:bold;
-
-}
-
-nav ul{
-
-    display:flex;
-
-    list-style:none;
-
-}
-
-nav ul li{
-
-    margin-left:25px;
-
-}
-
-nav ul li a{
-
-    color:white;
-
-    text-decoration:none;
-
-    font-size:17px;
-
-    font-weight:bold;
-
-    transition:.3s;
-
-}
-
-nav ul li a:hover{
-
-    color:#fde047;
-
-}
-
-/* ================= PAGE ================= */
-
-h1{
-
-    color:#14532d;
-
-    margin-bottom:10px;
-
-}
-
-.subtitle{
-
-    color:#666;
-
-    margin-bottom:20px;
-
-}
-
-.top-bar{
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    margin-bottom:20px;
-
-}
-
-.saved{
-
-    text-decoration:none;
-    background:#e11d48;
-    color:white;
-    padding:10px 18px;
-    border-radius:8px;
-    transition:.3s;
-
-}
-
-.saved:hover{
-
-    background:#be123c;
-
-}
-
-form{
-
-    margin-bottom:30px;
-
-}
-
-input{
-
-    width:320px;
-    max-width:100%;
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:8px;
-
-}
-
-button{
-
-    padding:12px 18px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    transition:.3s;
-
-}
-
-.search-btn{
-
-    background:#2563eb;
-    color:white;
-
-}
-
-.search-btn:hover{
-
-    background:#1d4ed8;
-
-}
-
-.container{
-
-    display:flex;
-    flex-wrap:wrap;
-    gap:25px;
-
-}
-
-.card{
-
-    width:320px;
-    background:white;
-    border-radius:15px;
-    overflow:hidden;
-    box-shadow:0 8px 20px rgba(0,0,0,.12);
-    transition:.3s;
-
-}
-
-.card:hover{
-
-    transform:translateY(-8px);
-
-}
-
-.card img{
-
-    width:100%;
-    height:220px;
-    object-fit:cover;
-
-}
-
-.info{
-
-    padding:18px;
-
-}
-
-.info h2{
-
-    color:#14532d;
-    margin-bottom:10px;
-
-}
-
-.info p{
-
-    margin:8px 0;
-    color:#555;
-
-}
-
-.buttons{
-
-    display:flex;
-    justify-content:space-between;
-    margin-top:20px;
-
-}
-
-.details{
-
-    background:#2563eb;
-    color:white;
-
-}
-
-.details:hover{
-
-    background:#1d4ed8;
-
-}
-
-.save{
-
-    background:#16a34a;
-    color:white;
-
-}
-
-.save:hover{
-
-    background:#15803d;
-
-}
-
-/* ================ RESPONSIVE ================ */
-
-@media(max-width:768px){
-
-nav{
-
-    flex-direction:column;
-
-}
-
-nav ul{
-
-    margin-top:15px;
-
-    flex-direction:column;
-
-    text-align:center;
-
-}
-
-nav ul li{
-
-    margin:10px 0;
-
-}
-
-.top-bar{
-
-    flex-direction:column;
-
-    align-items:flex-start;
-
-}
-
-.saved{
-
-    margin-top:15px;
-
-}
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Available Properties | KEJAHUNT</title>
+    <meta name="theme-color" content="#064e3b">
+    <meta name="description" content="Explore rental houses across Kenya on KEJAHUNT. Search properties by location and save your favourites.">
+
+    <style>
+        :root {
+            --green: #14532d;
+            --green-dark: #064e3b;
+            --green-light: #ecfdf5;
+            --accent: #059669;
+            --text: #1e293b;
+            --muted: #64748b;
+            --background: #f4f7fb;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* NAVIGATION */
+
+        nav {
+            background: linear-gradient(120deg, #064e3b, #14532d);
+            color: white;
+            padding: 17px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 18px rgba(6, 78, 59, 0.15);
+        }
+
+        .logo {
+            color: white;
+            text-decoration: none;
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #6ee7b7;
+        }
+
+        nav ul {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 5px;
+            list-style: none;
+        }
+
+        nav ul a {
+            display: block;
+            padding: 10px 13px;
+            border-radius: 9px;
+            color: #ecfdf5;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background 0.2s ease;
+        }
+
+        nav ul a:hover,
+        nav ul a.active {
+            background: rgba(255, 255, 255, 0.14);
+            color: white;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible {
+            outline: 3px solid #34d399;
+            outline-offset: 3px;
+        }
+
+        /* MAIN LAYOUT */
+
+        main {
+            width: 90%;
+            max-width: 1200px;
+            margin: 36px auto 45px;
+            flex: 1;
+        }
+
+        /* HERO */
+
+        .hero {
+            background: linear-gradient(125deg, #064e3b, #047857);
+            color: white;
+            border-radius: 21px;
+            padding: 35px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(6, 78, 59, 0.13);
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border: 35px solid rgba(255, 255, 255, 0.07);
+            border-radius: 50%;
+            right: -65px;
+            top: -105px;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.17);
+            color: #d1fae5;
+            border-radius: 30px;
+            padding: 7px 12px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 {
+            font-size: clamp(27px, 4vw, 37px);
+            line-height: 1.25;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            max-width: 650px;
+            color: #d1fae5;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* SEARCH PANEL */
+
+        .search-panel {
+            background: white;
+            padding: 24px;
+            border-radius: 17px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-bottom: 34px;
+        }
+
+        .search-heading {
+            margin-bottom: 17px;
+        }
+
+        .search-heading h2 {
+            color: #0f172a;
+            font-size: 19px;
+            margin-bottom: 6px;
+        }
+
+        .search-heading p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+            margin: 0;
+        }
+
+        .search-input-wrap {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+        }
+
+        .search-input-wrap input {
+            width: 100%;
+            height: 48px;
+            padding: 12px 15px 12px 43px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input-wrap input:focus {
+            outline: none;
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .search-btn {
+            min-height: 48px;
+            padding: 0 24px;
+            border: none;
+            border-radius: 10px;
+            background: #047857;
+            color: white;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .search-btn:hover {
+            background: #065f46;
+            transform: translateY(-1px);
+        }
+
+        .clear-search {
+            display: inline-block;
+            margin-top: 13px;
+            color: #047857;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .clear-search:hover {
+            text-decoration: underline;
+        }
+
+        /* LISTINGS HEADER */
+
+        .listings-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            color: #059669;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            margin-bottom: 7px;
+            display: block;
+        }
+
+        .listings-heading h2 {
+            color: #0f172a;
+            font-size: 24px;
+            margin-bottom: 7px;
+        }
+
+        .listings-heading p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .saved-link {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border: 1px solid #fecdd3;
+            border-radius: 10px;
+            background: #fff1f2;
+            color: #be123c;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 800;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .saved-link:hover {
+            background: #ffe4e6;
+            transform: translateY(-2px);
+        }
+
+        /* PROPERTY GRID */
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        .property-card {
+            min-width: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            transition: transform 0.25s ease,
+                        box-shadow 0.25s ease,
+                        border-color 0.25s ease;
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            border-color: #a7f3d0;
+            box-shadow: 0 17px 35px rgba(15, 23, 42, 0.11);
+        }
+
+        .property-image {
+            height: 225px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            background: #e2e8f0;
+        }
+
+        .property-image img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .property-card:hover .property-image img {
+            transform: scale(1.04);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #64748b;
+            background: linear-gradient(135deg, #e2e8f0, #f1f5f9);
+            font-size: 13px;
+        }
+
+        .image-placeholder span {
+            font-size: 38px;
+        }
+
+        .property-tag {
+            position: absolute;
+            left: 14px;
+            top: 14px;
+            padding: 7px 10px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #065f46;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 800;
+            box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08);
+        }
+
+        /* PROPERTY DETAILS */
+
+        .property-info {
+            padding: 21px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .property-info h3 {
+            color: #0f172a;
+            font-size: 19px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+            margin-bottom: 10px;
+        }
+
+        .location {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        .price {
+            color: #047857;
+            font-size: 21px;
+            font-weight: 800;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .price small {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .features {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px;
+            padding: 14px 0;
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 19px;
+        }
+
+        .feature {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 9px;
+            border-radius: 7px;
+            background: #f8fafc;
+            color: #475569;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .feature-icon {
+            font-size: 14px;
+        }
+
+        /* CARD ACTIONS */
+
+        .card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .action-btn {
+            min-height: 43px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 8px;
+            border-radius: 9px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 800;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .details-btn {
+            background: #047857;
+            color: white;
+        }
+
+        .details-btn:hover {
+            background: #065f46;
+        }
+
+        .save-btn {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .save-btn:hover {
+            background: #d1fae5;
+        }
+
+        /* EMPTY STATE */
+
+        .empty-state {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 55px 25px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .empty-icon {
+            width: 76px;
+            height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            border-radius: 22px;
+            background: var(--green-light);
+            font-size: 35px;
+        }
+
+        .empty-state h3 {
+            color: #0f172a;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            max-width: 450px;
+            margin: 0 auto 22px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .empty-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 20px;
+            background: #047857;
+            color: white;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .empty-btn:hover {
+            background: #065f46;
+        }
+
+        /* FOOTER */
+
+        footer {
+            margin-top: 20px;
+            padding: 25px 15px;
+            text-align: center;
+            color: #64748b;
+            background: white;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        footer span {
+            color: #047857;
+            font-weight: 800;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1000px) {
+            .property-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            nav {
+                flex-direction: column;
+                gap: 14px;
+                padding: 17px 4%;
+            }
+
+            nav ul {
+                justify-content: center;
+            }
+
+            main {
+                width: 92%;
+                margin: 24px auto 35px;
+            }
+
+            .hero {
+                padding: 27px 22px;
+            }
+
+            .search-panel {
+                padding: 20px;
+            }
+
+            .listings-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .saved-link {
+                width: 100%;
+            }
+
+            .property-image {
+                height: 210px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            nav ul {
+                gap: 3px;
+            }
+
+            nav ul a {
+                padding: 9px 10px;
+                font-size: 12px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-btn {
+                width: 100%;
+            }
+
+            .property-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .property-image {
+                height: 235px;
+            }
+
+            .property-info {
+                padding: 19px;
+            }
+
+            .listings-heading h2 {
+                font-size: 22px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
-
-<nav>
-
-<div class="logo">
-
-🏠 KEJAHUNT
-
-</div>
-
-<ul>
-
-<li>
-
-<a href="/">Home</a>
-
-</li>
-
-<li>
-
-<a href="/properties">Properties</a>
-
-</li>
-
-<li>
-
-
-</li>
-
-</ul>
-
-</nav>
-
-<!-- ================= PAGE HEADER ================= -->
-
-<div class="top-bar">
-
-<div>
-
-<h1>🏠 Available Houses in KEJAHUNT</h1>
-
-<p class="subtitle">
-Find your next home in Kenya
-</p>
-
-</div>
-
-<a class="saved"
-href="{{ url_for('saved_properties') }}">
-❤️ Saved Properties
-</a>
-
-</div>
-
-<!-- ================= SEARCH ================= -->
-
-<form method="GET" action="/properties">
-
-<input
-type="text"
-name="q"
-placeholder="Search location, e.g. Nairobi, Kilimani"
-value="{{ query if query else '' }}">
-
-<button class="search-btn" type="submit">
-
-Search
-
-</button>
-
-</form>
-
-<!-- ================= PROPERTIES ================= -->
-
-<div class="container">
-
-{% for p in properties %}
-
-<div class="card">
-
-{% if p.image_file %}
-
-<img src="{{ url_for('static', filename='uploads/' + p.image_file) }}">
-
-{% else %}
-
-<div style="padding:90px;text-align:center;">
-
-No image available
-
-</div>
-
-{% endif %}
-
-<div class="info">
-
-<h2>{{ p.title }}</h2>
-
-<p>📍 {{ p.location }}</p>
-
-<p>💰 KES {{ p.price }}</p>
-
-<p>🛏 {{ p.bedrooms }} Bedrooms</p>
-
-<p>🛁 {{ p.bathrooms }} Bathrooms</p>
-
-<div class="buttons">
-
-<a href="/property/{{ p.id }}">
-
-<button class="details">
-
-View Details
-
-</button>
-
-</a>
-
-<a href="{{ url_for('save_property', property_id=p.id) }}">
-
-<button class="save">
-
-❤️ Save
-
-</button>
-
-</a>
-
-</div>
-
-</div>
-
-</div>
-
-{% else %}
-
-<h2>No properties available yet.</h2>
-
-{% endfor %}
-
-</div>
-
-<script>
-
-const cards=document.querySelectorAll(".card");
-
-cards.forEach(function(card){
-
-card.addEventListener("mouseenter",function(){
-
-this.style.boxShadow="0 18px 35px rgba(0,0,0,.25)";
-
-});
-
-card.addEventListener("mouseleave",function(){
-
-this.style.boxShadow="0 8px 20px rgba(0,0,0,.12)";
-
-});
-
-});
-
-</script>
+    <!-- NAVIGATION -->
+    <nav>
+        <a href="/" class="logo" aria-label="KEJAHUNT home">
+            🏠 KEJA<span>HUNT</span>
+        </a>
+
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/properties" class="active" aria-current="page">Properties</a></li>
+            <li>
+                <a href="{{ url_for('saved_properties') }}">❤️ Saved</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+
+        <!-- PAGE INTRODUCTION -->
+        <section class="hero">
+            <div class="hero-content">
+                <span class="eyebrow">YOUR NEXT HOME STARTS HERE</span>
+
+                <h1>Find a place to call home 🏡</h1>
+
+                <p>
+                    Explore available rental properties across Kenya.
+                    Compare prices, check locations, save your favourites,
+                    and connect with landlords to learn more.
+                </p>
+            </div>
+        </section>
+
+        <!-- SEARCH -->
+        <section class="search-panel" aria-labelledby="search-heading">
+            <div class="search-heading">
+                <h2 id="search-heading">Find your ideal house</h2>
+                <p>Search by town, neighbourhood, or property location.</p>
+            </div>
+
+            <form class="search-form" method="GET" action="/properties">
+                <div class="search-input-wrap">
+                    <span class="search-icon" aria-hidden="true">🔎</span>
+
+                    <input
+                        type="search"
+                        name="q"
+                        aria-label="Search properties by location"
+                        placeholder="Try Nairobi, Nakuru, Kilimani..."
+                        value="{{ query if query else '' }}"
+                    >
+                </div>
+
+                <button class="search-btn" type="submit">
+                    Search Properties
+                </button>
+            </form>
+
+            {% if query %}
+                <a class="clear-search" href="/properties">
+                    ✕ Clear search and view all properties
+                </a>
+            {% endif %}
+        </section>
+
+        <!-- PROPERTY LISTINGS -->
+        <section aria-labelledby="listings-title">
+            <div class="listings-heading">
+                <div>
+                    <span class="section-label">EXPLORE RENTALS</span>
+
+                    <h2 id="listings-title">
+                        {% if query %}
+                            Search results
+                        {% else %}
+                            Available Properties
+                        {% endif %}
+                    </h2>
+
+                    <p>
+                        {% if query %}
+                            Showing properties matching your search for
+                            "{{ query }}".
+                        {% else %}
+                            Explore the houses currently listed on KEJAHUNT.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <a class="saved-link"
+                   href="{{ url_for('saved_properties') }}">
+                    ❤️ Saved Properties
+                </a>
+            </div>
+
+            <div class="property-grid">
+
+                {% for p in properties %}
+
+                    <article class="property-card">
+
+                        <!-- PROPERTY IMAGE -->
+                        <div class="property-image">
+                            {% if p.image_file %}
+                                <img
+                                    src="{{ url_for('static', filename='uploads/' + p.image_file) }}"
+                                    alt="{{ p.title }}"
+                                    loading="lazy"
+                                >
+                            {% else %}
+                                <div class="image-placeholder">
+                                    <span aria-hidden="true">🏡</span>
+                                    <p>Property image unavailable</p>
+                                </div>
+                            {% endif %}
+
+                            <span class="property-tag">
+                                Rental Property
+                            </span>
+                        </div>
+
+                        <!-- PROPERTY INFORMATION -->
+                        <div class="property-info">
+
+                            <h3>{{ p.title }}</h3>
+
+                            <p class="location">
+                                📍 {{ p.location }}
+                            </p>
+
+                            <p class="price">
+                                KES {{ p.price }}
+                                <small>/ rental price</small>
+                            </p>
+
+                            <div class="features">
+
+                                <span class="feature">
+                                    <span class="feature-icon" aria-hidden="true">🛏️</span>
+                                    {% if p.bedrooms is not none %}
+                                        {{ p.bedrooms }} Bedrooms
+                                    {% else %}
+                                        Bedrooms not specified
+                                    {% endif %}
+                                </span>
+
+                                <span class="feature">
+                                    <span class="feature-icon" aria-hidden="true">🛁</span>
+                                    {% if p.bathrooms is not none %}
+                                        {{ p.bathrooms }} Bathrooms
+                                    {% else %}
+                                        Bathrooms not specified
+                                    {% endif %}
+                                </span>
+
+                            </div>
+
+                            <!-- KEEP EXISTING PROPERTY ROUTES -->
+                            <div class="card-actions">
+
+                                <a
+                                    class="action-btn details-btn"
+                                    href="/property/{{ p.id }}"
+                                >
+                                    View Details →
+                                </a>
+
+                                <a
+                                    class="action-btn save-btn"
+                                    href="{{ url_for('save_property', property_id=p.id) }}"
+                                >
+                                    ❤️ Save
+                                </a>
+
+                            </div>
+
+                        </div>
+                    </article>
+
+                {% else %}
+
+                    <!-- EMPTY RESULTS -->
+                    <div class="empty-state">
+                        <div class="empty-icon" aria-hidden="true">🏠</div>
+
+                        {% if query %}
+                            <h3>No matching properties found</h3>
+
+                            <p>
+                                We couldn't find a property matching
+                                "{{ query }}". Try another town or
+                                neighbourhood, or browse all available houses.
+                            </p>
+
+                            <a class="empty-btn" href="/properties">
+                                View All Properties
+                            </a>
+                        {% else %}
+                            <h3>No properties available yet</h3>
+
+                            <p>
+                                There are no properties to display right now.
+                                Please check again later.
+                            </p>
+
+                            <a class="empty-btn" href="/">
+                                Return Home
+                            </a>
+                        {% endif %}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        &copy; 2026 <span>KEJAHUNT</span>.
+        Making house hunting simpler across Kenya.
+    </footer>
 
 </body>
 </html>

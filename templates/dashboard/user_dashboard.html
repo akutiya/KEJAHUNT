@@ -2,447 +2,687 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>User Dashboard - KEJAHUNT</title>
-<meta name="theme-color" content="#064e3b">
-
-<style>
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-    background: #f1f5f9;
-    color: #1e293b;
-    min-height: 100vh;
-}
-
-/* ================= NAVBAR ================= */
-
-nav {
-    background: linear-gradient(135deg, #064e3b, #14532d);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 5%;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.logo {
-    font-size: 25px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-}
-
-.logo span {
-    color: #6ee7b7;
-}
-
-nav ul {
-    display: flex;
-    align-items: center;
-    list-style: none;
-    gap: 8px;
-}
-
-nav ul li {
-    margin-left: 5px;
-}
-
-nav ul li a {
-    color: #ecfdf5;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: bold;
-    padding: 11px 13px;
-    display: block;
-    border-radius: 8px;
-    transition: background 0.3s, color 0.3s;
-}
-
-nav ul li a:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.13);
-}
-
-nav ul li:last-child a {
-    background: #dc2626;
-    color: white;
-}
-
-nav ul li:last-child a:hover {
-    background: #b91c1c;
-}
-
-/* ================= CONTENT ================= */
-
-.container {
-    width: 90%;
-    max-width: 1150px;
-    margin: 42px auto;
-}
-
-.dashboard-header {
-    margin-bottom: 30px;
-}
-
-.dashboard-title {
-    color: #064e3b;
-    font-size: 30px;
-    font-weight: 800;
-    margin-bottom: 14px;
-}
-
-.welcome {
-    color: #334155;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 9px;
-}
-
-.welcome span {
-    color: #059669;
-}
-
-.role {
-    display: inline-block;
-    color: #047857;
-    background: #d1fae5;
-    padding: 7px 13px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: capitalize;
-    margin-top: 5px;
-}
-
-/* ================= DASHBOARD CARD ================= */
-
-.card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 18px;
-    padding: 35px;
-    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-4px);
-}
-
-.card h2 {
-    color: #065f46;
-    font-size: 23px;
-    margin-bottom: 14px;
-}
-
-.card p {
-    color: #64748b;
-    font-size: 15px;
-    line-height: 1.8;
-    margin-bottom: 25px;
-}
-
-/* ================= DASHBOARD ACTIONS ================= */
-
-.button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 13px 19px;
-    margin-right: 9px;
-    margin-bottom: 10px;
-    text-decoration: none;
-    color: white;
-    border-radius: 9px;
-    font-size: 13px;
-    font-weight: bold;
-    transition: transform 0.25s ease, box-shadow 0.25s ease,
-                background 0.25s ease;
-}
-
-.button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 7px 15px rgba(0, 0, 0, 0.13);
-}
-
-.button:focus-visible,
-nav a:focus-visible {
-    outline: 3px solid #34d399;
-    outline-offset: 3px;
-}
-
-.properties {
-    background: #059669;
-}
-
-.properties:hover {
-    background: #047857;
-}
-
-.saved {
-    background: #0f766e;
-}
-
-.saved:hover {
-    background: #115e59;
-}
-
-.inbox {
-    background: #6d28d9;
-}
-
-.inbox:hover {
-    background: #5b21b6;
-}
-
-/* ================= QUICK GUIDE ================= */
-
-.dashboard-note {
-    margin-top: 25px;
-    padding: 20px 22px;
-    border: 1px solid #a7f3d0;
-    border-radius: 13px;
-    background: #ecfdf5;
-}
-
-.dashboard-note h3 {
-    color: #065f46;
-    font-size: 15px;
-    margin-bottom: 8px;
-}
-
-.dashboard-note p {
-    color: #475569;
-    font-size: 13px;
-    line-height: 1.8;
-    margin-bottom: 0;
-}
-
-/* ================= FOOTER ================= */
-
-footer {
-    text-align: center;
-    color: #94a3b8;
-    font-size: 12px;
-    padding: 25px 15px;
-    margin-top: 30px;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 900px) {
-
-    nav {
-        flex-direction: column;
-        gap: 16px;
-        padding: 20px;
-    }
-
-    nav ul {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 5px;
-    }
-
-    nav ul li {
-        margin: 0;
-    }
-
-    nav ul li a {
-        padding: 10px 12px;
-    }
-
-    .container {
-        margin: 30px auto;
-    }
-
-}
-
-@media (max-width: 600px) {
-
-    .container {
-        width: 92%;
-        margin: 25px auto;
-    }
-
-    .dashboard-title {
-        font-size: 25px;
-    }
-
-    .welcome {
-        font-size: 18px;
-    }
-
-    .card {
-        padding: 25px 20px;
-        border-radius: 14px;
-    }
-
-    .card h2 {
-        font-size: 21px;
-    }
-
-    .button {
-        display: flex;
-        width: 100%;
-        margin-right: 0;
-        padding: 14px;
-    }
-
-    nav ul {
-        width: 100%;
-    }
-
-    nav ul li a {
-        font-size: 12px;
-        padding: 9px 10px;
-    }
-
-}
-
-/* ================= ACCESSIBILITY ================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        animation: none !important;
-        transition: none !important;
-    }
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>House Hunter Dashboard | KEJAHUNT</title>
+    <meta name="theme-color" content="#064e3b">
+    <meta name="description" content="Manage your house hunt with KEJAHUNT. Browse rental properties, save homes and connect with landlords.">
+
+    <style>
+        :root {
+            --green: #14532d;
+            --green-dark: #064e3b;
+            --green-light: #ecfdf5;
+            --accent: #10b981;
+            --text: #1e293b;
+            --muted: #64748b;
+            --background: #f4f7fb;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* NAVIGATION */
+
+        nav {
+            background: linear-gradient(120deg, #064e3b, #14532d);
+            color: white;
+            padding: 16px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 18px rgba(6, 78, 59, 0.15);
+        }
+
+        .logo {
+            color: white;
+            text-decoration: none;
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #6ee7b7;
+        }
+
+        nav ul {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 5px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav ul a {
+            display: block;
+            padding: 10px 13px;
+            border-radius: 9px;
+            color: #ecfdf5;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        nav ul a:hover,
+        nav ul a.active {
+            background: rgba(255, 255, 255, 0.14);
+            color: white;
+        }
+
+        nav ul a.logout {
+            background: #dc2626;
+            color: white;
+        }
+
+        nav ul a.logout:hover {
+            background: #b91c1c;
+        }
+
+        a:focus-visible {
+            outline: 3px solid #34d399;
+            outline-offset: 3px;
+        }
+
+        /* MAIN CONTENT */
+
+        .container {
+            width: 90%;
+            max-width: 1180px;
+            margin: 38px auto;
+            flex: 1;
+        }
+
+        /* WELCOME SECTION */
+
+        .welcome-banner {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(125deg, #064e3b, #047857);
+            color: white;
+            padding: 36px;
+            border-radius: 22px;
+            margin-bottom: 30px;
+            box-shadow: 0 12px 30px rgba(6, 78, 59, 0.15);
+        }
+
+        .welcome-banner::after {
+            content: "";
+            position: absolute;
+            width: 230px;
+            height: 230px;
+            border: 35px solid rgba(255, 255, 255, 0.07);
+            border-radius: 50%;
+            right: -65px;
+            top: -105px;
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            color: #d1fae5;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 17px;
+        }
+
+        .welcome-banner h1 {
+            font-size: clamp(26px, 4vw, 36px);
+            line-height: 1.25;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .welcome-banner h1 span {
+            color: #a7f3d0;
+        }
+
+        .welcome-banner p {
+            max-width: 620px;
+            color: #d1fae5;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 23px;
+        }
+
+        .welcome-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .welcome-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 17px;
+            border-radius: 9px;
+            background: white;
+            color: var(--green-dark);
+            font-size: 13px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .welcome-btn:hover {
+            background: #ecfdf5;
+            transform: translateY(-2px);
+        }
+
+        .welcome-btn.secondary {
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.30);
+            color: white;
+        }
+
+        .welcome-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        /* SECTION HEADINGS */
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            color: #0f172a;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .section-label {
+            display: block;
+            color: #059669;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.3px;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        /* QUICK ACCESS CARDS */
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .quick-card {
+            min-width: 0;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: transform 0.25s ease, box-shadow 0.25s ease,
+                        border-color 0.25s ease;
+        }
+
+        .quick-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 34px rgba(15, 23, 42, 0.09);
+            border-color: #a7f3d0;
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: 25px;
+            margin-bottom: 19px;
+        }
+
+        .icon-houses {
+            background: #d1fae5;
+        }
+
+        .icon-saved {
+            background: #fce7f3;
+        }
+
+        .icon-messages {
+            background: #ede9fe;
+        }
+
+        .quick-card h3 {
+            color: #0f172a;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .quick-card p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+            margin-bottom: 22px;
+            flex: 1;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #047857;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 8px 0;
+        }
+
+        .card-link span {
+            transition: transform 0.2s ease;
+        }
+
+        .card-link:hover span {
+            transform: translateX(4px);
+        }
+
+        /* HOW IT WORKS */
+
+        .guide {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 25px;
+            margin-top: 24px;
+        }
+
+        .guide-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--green-light);
+            color: #047857;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .guide-item h3 {
+            font-size: 14px;
+            color: #0f172a;
+            margin: 2px 0 7px;
+        }
+
+        .guide-item p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            margin-top: 25px;
+            color: #64748b;
+            font-size: 12px;
+            border-top: 1px solid var(--border);
+            background: white;
+        }
+
+        footer span {
+            color: #047857;
+            font-weight: 700;
+        }
+
+        /* RESPONSIVE LAYOUT */
+
+        @media (max-width: 950px) {
+            nav {
+                flex-direction: column;
+                gap: 15px;
+                padding: 17px 4%;
+            }
+
+            nav ul {
+                justify-content: center;
+            }
+
+            .quick-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .quick-card:last-child {
+                grid-column: 1 / -1;
+            }
+
+            .guide-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 92%;
+                margin: 24px auto;
+            }
+
+            nav ul {
+                width: 100%;
+                gap: 4px;
+            }
+
+            nav ul li {
+                flex: 0 0 auto;
+            }
+
+            nav ul a {
+                padding: 9px 10px;
+                font-size: 12px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .welcome-banner {
+                padding: 26px 22px;
+                border-radius: 17px;
+            }
+
+            .welcome-banner p {
+                font-size: 14px;
+            }
+
+            .welcome-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .welcome-btn {
+                width: 100%;
+            }
+
+            .section-heading h2 {
+                font-size: 20px;
+            }
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .quick-card:last-child {
+                grid-column: auto;
+            }
+
+            .quick-card {
+                padding: 22px;
+            }
+
+            .guide {
+                padding: 22px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<nav>
+    <!-- NAVIGATION -->
+    <nav>
+        <a class="logo" href="/" aria-label="KEJAHUNT home">
+            🏠 KEJA<span>HUNT</span>
+        </a>
 
-<div class="logo">
-🏠 KEJA<span>HUNT</span>
-</div>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/properties" class="active">Properties</a></li>
+            <li><a href="{{ url_for('saved_properties') }}">❤️ Saved</a></li>
+            <li><a href="{{ url_for('inbox') }}">Inbox</a></li>
+            <li><a href="/logout" class="logout">Logout</a></li>
+        </ul>
+    </nav>
 
-<ul>
+    <main class="container">
 
-<li>
-<a href="/">Home</a>
-</li>
+        <!-- WELCOME BANNER -->
+        <section class="welcome-banner">
+            <div class="welcome-content">
+                <div class="eyebrow">
+                    🏡 HOUSE HUNTER DASHBOARD
+                </div>
 
-<li>
-<a href="/properties">Properties</a>
-</li>
+                <h1>
+                    Welcome back, <span>{{ user.username }}</span>!
+                </h1>
 
-<li>
-<a href="{{ url_for('saved_properties') }}">Saved</a>
-</li>
+                <p>
+                    Your next home could be closer than you think.
+                    Explore available rentals, keep track of your
+                    favourite properties, and communicate directly
+                    with landlords through KEJAHUNT.
+                </p>
 
-<li>
-<a href="{{ url_for('inbox') }}">Inbox</a>
-</li>
+                <div class="welcome-actions">
+                    <a class="welcome-btn" href="/properties">
+                        🔎 Explore Houses <span aria-hidden="true">→</span>
+                    </a>
 
-<li>
-<a href="/logout">Logout</a>
-</li>
+                    <a class="welcome-btn secondary"
+                       href="{{ url_for('saved_properties') }}">
+                        ♥ View Saved Homes
+                    </a>
+                </div>
+            </div>
+        </section>
 
-</ul>
+        <!-- QUICK ACCESS -->
+        <section aria-labelledby="quick-heading">
+            <div class="section-heading">
+                <div>
+                    <span class="section-label">YOUR SPACE</span>
+                    <h2 id="quick-heading">Everything you need</h2>
+                    <p>Choose where you want to continue your house hunt.</p>
+                </div>
+            </div>
 
-</nav>
+            <div class="quick-grid">
 
-<div class="container">
+                <article class="quick-card">
+                    <div class="card-icon icon-houses" aria-hidden="true">
+                        🏘️
+                    </div>
 
-<div class="dashboard-header">
+                    <h3>Explore Properties</h3>
 
-<h1 class="dashboard-title">
-House Hunter Dashboard
-</h1>
+                    <p>
+                        Browse available rental houses, compare options,
+                        and find a property that suits your needs and budget.
+                    </p>
 
-<h2 class="welcome">
-Welcome, <span>{{ user.username }}</span> 👋
-</h2>
+                    <a class="card-link" href="/properties">
+                        Browse houses <span aria-hidden="true">→</span>
+                    </a>
+                </article>
 
-<p class="role">
-Role: {{ user.role }}
-</p>
+                <article class="quick-card">
+                    <div class="card-icon icon-saved" aria-hidden="true">
+                        ❤️
+                    </div>
 
-</div>
+                    <h3>Saved Properties</h3>
 
-<div class="card">
+                    <p>
+                        Revisit houses you have saved and keep your
+                        interesting property options easy to find.
+                    </p>
 
-<h2>🏡 Browse Houses</h2>
+                    <a class="card-link"
+                       href="{{ url_for('saved_properties') }}">
+                        View saved homes <span aria-hidden="true">→</span>
+                    </a>
+                </article>
 
-<p>
-Find your next home with KEJAHUNT. Explore available rental
-properties across Kenya, save the ones you love, and connect
-with landlords to learn more about a property.
-</p>
+                <article class="quick-card">
+                    <div class="card-icon icon-messages" aria-hidden="true">
+                        💬
+                    </div>
 
-<a class="button properties" href="/properties">
-🏠 View Available Houses
-</a>
+                    <h3>My Messages</h3>
 
-<a class="button saved" href="{{ url_for('saved_properties') }}">
-❤️ Saved Properties
-</a>
+                    <p>
+                        Open your conversations with landlords to ask
+                        questions and discuss property details.
+                    </p>
 
-<a class="button inbox" href="{{ url_for('my_messages') }}">
-💬 My Messages
-</a>
+                    <a class="card-link"
+                       href="{{ url_for('my_messages') }}">
+                        Open messages <span aria-hidden="true">→</span>
+                    </a>
+                </article>
 
-</div>
+            </div>
+        </section>
 
-<div class="dashboard-note">
+        <!-- HOUSE-HUNTING GUIDE -->
+        <section class="guide" aria-labelledby="guide-heading">
+            <div class="section-heading">
+                <div>
+                    <span class="section-label">A SIMPLE PLAN</span>
+                    <h2 id="guide-heading">Make your search easier</h2>
+                    <p>Three simple steps to help you find your next home.</p>
+                </div>
+            </div>
 
-<h3>💡 Make your house hunt easier</h3>
+            <div class="guide-grid">
 
-<p>
-Browse available properties, save interesting houses for later,
-and use your messages to keep track of conversations with landlords.
-Your next home could be waiting for you!
-</p>
+                <div class="guide-item">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h3>Find a house</h3>
+                        <p>
+                            Explore available properties and compare
+                            locations, prices, and house details.
+                        </p>
+                    </div>
+                </div>
 
-</div>
+                <div class="guide-item">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h3>Save your favourites</h3>
+                        <p>
+                            Save properties you like so you can return
+                            to them while deciding which one suits you.
+                        </p>
+                    </div>
+                </div>
 
-</div>
+                <div class="guide-item">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h3>Contact the landlord</h3>
+                        <p>
+                            Use your messages to ask questions and
+                            discuss the property before making a decision.
+                        </p>
+                    </div>
+                </div>
 
-<footer>
-&copy; 2026 KEJAHUNT. Making house hunting simpler across Kenya.
-</footer>
+            </div>
+        </section>
 
-<script>
+    </main>
 
-const card = document.querySelector(".card");
-
-// Preserve the original card-hover effect.
-
-card.addEventListener("mouseenter", function () {
-
-    this.style.boxShadow = "0 18px 35px rgba(0, 0, 0, 0.15)";
-
-});
-
-card.addEventListener("mouseleave", function () {
-
-    this.style.boxShadow = "0 8px 25px rgba(15, 23, 42, 0.06)";
-
-});
-
-</script>
+    <footer>
+        &copy; 2026 <span>KEJAHUNT</span>.
+        Making house hunting simpler across Kenya.
+    </footer>
 
 </body>
 </html>

@@ -1,0 +1,646 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.admin-page {
+    background: #f4f7fb;
+    min-height: 100vh;
+    padding: 30px 0 55px;
+    color: #172033;
+}
+
+.admin-container {
+    width: min(1200px, 94%);
+    margin: auto;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.admin-header h1 {
+    margin: 5px 0;
+    color: #14532d;
+}
+
+.admin-header p {
+    color: #718096;
+    margin: 0;
+}
+
+.admin-eyebrow {
+    color: #0f766e;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.admin-top-link,
+.admin-button {
+    display: inline-block;
+    padding: 11px 15px;
+    border: 0;
+    border-radius: 9px;
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s ease;
+}
+
+.admin-top-link {
+    background: #14532d;
+    color: white;
+}
+
+.admin-top-link:hover {
+    background: #0f766e;
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.admin-stat {
+    background: white;
+    padding: 20px;
+    border: 1px solid #e5eaf1;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px #17203308;
+}
+
+.admin-stat-label {
+    color: #718096;
+    font-size: 13px;
+}
+
+.admin-stat-number {
+    display: block;
+    font-size: 30px;
+    font-weight: 800;
+    margin: 8px 0;
+    color: #14532d;
+}
+
+.admin-stat-note {
+    color: #718096;
+    font-size: 12px;
+}
+
+.pending {
+    border-top: 4px solid #d97706;
+}
+
+.verified {
+    border-top: 4px solid #15803d;
+}
+
+.rejected {
+    border-top: 4px solid #dc2626;
+}
+
+.admin-workspace {
+    background: white;
+    border: 1px solid #e5eaf1;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.admin-workspace-header {
+    padding: 22px;
+    border-bottom: 1px solid #e5eaf1;
+}
+
+.admin-workspace-header h2 {
+    margin: 0 0 6px;
+}
+
+.admin-workspace-header p {
+    color: #718096;
+    margin: 0;
+    font-size: 13px;
+}
+
+.admin-filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 180px auto;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.admin-filters input,
+.admin-filters select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #dce3ec;
+    border-radius: 9px;
+    background: white;
+    color: #172033;
+}
+
+.admin-filters input:focus,
+.admin-filters select:focus,
+.admin-review-form input:focus {
+    outline: 2px solid #99f6e4;
+    border-color: #0f766e;
+}
+
+.admin-search-button,
+.admin-approve {
+    background: #14532d;
+    color: white;
+}
+
+.admin-search-button:hover,
+.admin-approve:hover {
+    background: #0f766e;
+}
+
+.admin-list {
+    padding: 20px;
+    display: grid;
+    gap: 16px;
+}
+
+.admin-property {
+    display: grid;
+    grid-template-columns: 175px minmax(0, 1fr);
+    gap: 20px;
+    padding: 16px;
+    border: 1px solid #e5eaf1;
+    border-radius: 13px;
+    transition: box-shadow 0.2s ease;
+}
+
+.admin-property:hover {
+    box-shadow: 0 7px 20px #17203312;
+}
+
+.admin-property-image,
+.admin-image-placeholder {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #edf2f7;
+}
+
+.admin-image-placeholder {
+    display: grid;
+    place-items: center;
+    color: #718096;
+    font-size: 13px;
+    text-align: center;
+}
+
+.admin-property-main {
+    min-width: 0;
+}
+
+.admin-property-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.admin-property h3 {
+    margin: 0 0 8px;
+    overflow-wrap: anywhere;
+    color: #172033;
+}
+
+.admin-location {
+    color: #718096;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.admin-price {
+    color: #14532d;
+    font-weight: 800;
+    font-size: 17px;
+}
+
+.admin-description {
+    color: #4b5563;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.admin-owner {
+    color: #4b5563;
+    font-size: 13px;
+    line-height: 1.8;
+    margin: 12px 0;
+    overflow-wrap: anywhere;
+}
+
+.admin-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.badge-pending {
+    background: #fff7ed;
+    color: #9a3412;
+}
+
+.badge-verified {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.admin-review-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.admin-review-form input {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid #dce3ec;
+    border-radius: 8px;
+}
+
+.admin-reject {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.admin-reject:hover {
+    background: #fecaca;
+}
+
+.admin-pending {
+    background: #edf2f7;
+    color: #243247;
+}
+
+.admin-pending:hover {
+    background: #dce3ec;
+}
+
+.admin-flash {
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-radius: 9px;
+    background: #dcfce7;
+    color: #166534;
+    overflow-wrap: anywhere;
+}
+
+.admin-flash.error,
+.admin-flash.danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.admin-empty {
+    text-align: center;
+    padding: 40px 15px;
+    color: #718096;
+}
+
+@media (max-width: 900px) {
+    .admin-filters {
+        grid-template-columns: minmax(0, 1fr) 160px;
+    }
+
+    .admin-search-button {
+        grid-column: 1 / -1;
+    }
+
+    .admin-review-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-review-form input {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 760px) {
+    .admin-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-search-button {
+        grid-column: auto;
+    }
+
+    .admin-property {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-property-image,
+    .admin-image-placeholder {
+        height: 210px;
+    }
+}
+
+@media (max-width: 420px) {
+    .admin-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-workspace-header {
+        padding: 16px;
+    }
+
+    .admin-list {
+        padding: 12px;
+    }
+
+    .admin-property {
+        padding: 12px;
+    }
+
+    .admin-review-form {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-review-form input {
+        grid-column: auto;
+    }
+}
+</style>
+
+<div class="admin-page">
+    <div class="admin-container">
+
+        <header class="admin-header">
+            <div>
+                <div class="admin-eyebrow">KEJAHUNT CONTROL CENTER</div>
+                <h1>Admin Dashboard</h1>
+                <p>Monitor activity and review property listings.</p>
+            </div>
+
+            <a class="admin-top-link" href="{{ url_for('properties') }}">
+                View Public Listings ↗
+            </a>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="admin-flash {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <section class="admin-stats">
+
+            <div class="admin-stat">
+                <span class="admin-stat-label">Registered Users</span>
+                <span class="admin-stat-number">{{ total_users }}</span>
+                <span class="admin-stat-note">All account types</span>
+            </div>
+
+            <div class="admin-stat">
+                <span class="admin-stat-label">Landlords</span>
+                <span class="admin-stat-number">{{ total_landlords }}</span>
+                <span class="admin-stat-note">Property providers</span>
+            </div>
+
+            <div class="admin-stat">
+                <span class="admin-stat-label">Total Listings</span>
+                <span class="admin-stat-number">{{ total_properties }}</span>
+                <span class="admin-stat-note">All submitted properties</span>
+            </div>
+
+            <div class="admin-stat pending">
+                <span class="admin-stat-label">Awaiting Review</span>
+                <span class="admin-stat-number">{{ pending_count }}</span>
+                <span class="admin-stat-note">Need your decision</span>
+            </div>
+
+            <div class="admin-stat verified">
+                <span class="admin-stat-label">Verified Listings</span>
+                <span class="admin-stat-number">{{ verified_count }}</span>
+                <span class="admin-stat-note">Approved listings</span>
+            </div>
+
+            <div class="admin-stat rejected">
+                <span class="admin-stat-label">Rejected Listings</span>
+                <span class="admin-stat-number">{{ rejected_count }}</span>
+                <span class="admin-stat-note">Not approved</span>
+            </div>
+
+        </section>
+
+        <section class="admin-workspace">
+
+            <div class="admin-workspace-header">
+                <h2>Property Listings</h2>
+                <p>
+                    Search properties, check landlord details, and manage verification.
+                </p>
+
+                <form
+                    class="admin-filters"
+                    method="GET"
+                    action="{{ url_for('admin_dashboard') }}"
+                >
+                    <input
+                        type="search"
+                        name="q"
+                        value="{{ search }}"
+                        placeholder="Search title, location or landlord..."
+                        aria-label="Search property listings"
+                    >
+
+                    <select name="status" aria-label="Filter by verification status">
+                        <option value="All" {% if selected_status == 'All' %}selected{% endif %}>
+                            All statuses
+                        </option>
+
+                        <option value="Pending" {% if selected_status == 'Pending' %}selected{% endif %}>
+                            Pending review
+                        </option>
+
+                        <option value="Verified" {% if selected_status == 'Verified' %}selected{% endif %}>
+                            Verified
+                        </option>
+
+                        <option value="Rejected" {% if selected_status == 'Rejected' %}selected{% endif %}>
+                            Rejected
+                        </option>
+                    </select>
+
+                    <button
+                        class="admin-button admin-search-button"
+                        type="submit"
+                    >
+                        Search Listings
+                    </button>
+                </form>
+            </div>
+
+            <div class="admin-list">
+
+                {% for p in properties %}
+
+                    <article class="admin-property">
+
+                        <div>
+                            {% if p.image_file %}
+                                <img
+                                    class="admin-property-image"
+                                    src="{{ url_for('static', filename='uploads/' ~ p.image_file) }}"
+                                    alt="{{ p.title }}"
+                                    loading="lazy"
+                                >
+                            {% else %}
+                                <div class="admin-image-placeholder">
+                                    No property photo
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="admin-property-main">
+
+                            <div class="admin-property-top">
+                                <div>
+                                    <h3>{{ p.title }}</h3>
+
+                                    <div class="admin-location">
+                                        📍 {{ p.location }}
+                                    </div>
+
+                                    <div class="admin-price">
+                                        KSh {{ p.price }}
+                                    </div>
+                                </div>
+
+                                <span class="admin-badge
+                                    {% if p.verification_status == 'Verified' %}
+                                        badge-verified
+                                    {% elif p.verification_status == 'Rejected' %}
+                                        badge-rejected
+                                    {% else %}
+                                        badge-pending
+                                    {% endif %}
+                                ">
+                                    {{ p.verification_status }}
+                                </span>
+                            </div>
+
+                            <p class="admin-description">
+                                {{ p.description }}
+                            </p>
+
+                            <div class="admin-owner">
+                                <strong>Landlord:</strong>
+                                {{ p.landlord_name }}
+                                <br>
+
+                                <strong>Email:</strong>
+                                {{ p.landlord_email }}
+                                <br>
+
+                                <strong>Availability:</strong>
+                                {{ p.status }}
+                            </div>
+
+                            <form
+                                class="admin-review-form"
+                                method="POST"
+                                action="{{ url_for('admin_verify_property', property_id=p.id) }}"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="q"
+                                    value="{{ search }}"
+                                >
+
+                                <input
+                                    type="hidden"
+                                    name="status_filter"
+                                    value="{{ selected_status }}"
+                                >
+
+                                <input
+                                    type="text"
+                                    name="note"
+                                    placeholder="Optional review note"
+                                    aria-label="Optional review note for {{ p.title }}"
+                                >
+
+                                <button
+                                    class="admin-button admin-approve"
+                                    type="submit"
+                                    name="decision"
+                                    value="Verified"
+                                >
+                                    Approve
+                                </button>
+
+                                <button
+                                    class="admin-button admin-reject"
+                                    type="submit"
+                                    name="decision"
+                                    value="Rejected"
+                                >
+                                    Reject
+                                </button>
+
+                                <button
+                                    class="admin-button admin-pending"
+                                    type="submit"
+                                    name="decision"
+                                    value="Pending"
+                                >
+                                    Set Pending
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </article>
+
+                {% else %}
+
+                    <div class="admin-empty">
+                        <h3>No matching properties</h3>
+                        <p>
+                            Try another search or choose a different verification status.
+                        </p>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+        </section>
+
+    </div>
+</div>
+
+{% endblock %}

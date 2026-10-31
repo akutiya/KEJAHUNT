@@ -2,538 +2,635 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Landlord Dashboard - KEJAHUNT</title>
-<meta name="theme-color" content="#064e3b">
-
-<style>
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-    background: #f1f5f9;
-    color: #1e293b;
-    min-height: 100vh;
-}
-
-/* ================= NAVBAR ================= */
-
-nav {
-    background: linear-gradient(135deg, #064e3b, #14532d);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 5%;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.logo {
-    font-size: 25px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-}
-
-.logo span {
-    color: #6ee7b7;
-}
-
-nav ul {
-    display: flex;
-    align-items: center;
-    list-style: none;
-    gap: 8px;
-}
-
-nav ul li {
-    margin-left: 5px;
-}
-
-nav ul li a {
-    color: #ecfdf5;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: bold;
-    padding: 11px 13px;
-    display: block;
-    border-radius: 8px;
-    transition: background 0.3s, color 0.3s;
-}
-
-nav ul li a:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.13);
-}
-
-nav ul li:last-child a {
-    background: #dc2626;
-    color: white;
-}
-
-nav ul li:last-child a:hover {
-    background: #b91c1c;
-}
-
-/* ================= CONTENT ================= */
-
-.container {
-    width: 90%;
-    max-width: 1150px;
-    margin: 42px auto;
-}
-
-.dashboard-header {
-    margin-bottom: 32px;
-}
-
-.dashboard-title {
-    color: #064e3b;
-    font-size: 30px;
-    font-weight: 800;
-    margin-bottom: 14px;
-}
-
-.welcome {
-    color: #334155;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 9px;
-}
-
-.welcome span {
-    color: #059669;
-}
-
-.role {
-    display: inline-block;
-    color: #047857;
-    background: #d1fae5;
-    padding: 7px 13px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: capitalize;
-    margin-top: 5px;
-}
-
-/* ================= CARDS ================= */
-
-.cards {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
-    align-items: stretch;
-}
-
-.card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    min-width: 0;
-    background: white;
-    padding: 30px;
-    border: 1px solid #e2e8f0;
-    border-radius: 18px;
-    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-}
-
-.card-icon {
-    width: 55px;
-    height: 55px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #ecfdf5;
-    border: 1px solid #d1fae5;
-    border-radius: 15px;
-    font-size: 26px;
-    margin-bottom: 22px;
-}
-
-.card h2 {
-    color: #065f46;
-    font-size: 20px;
-    margin-bottom: 13px;
-}
-
-.card p {
-    color: #64748b;
-    font-size: 14px;
-    line-height: 1.8;
-    margin-bottom: 25px;
-    flex-grow: 1;
-}
-
-/* ================= BUTTONS ================= */
-
-.button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    text-decoration: none;
-    color: white;
-    padding: 13px 18px;
-    border-radius: 9px;
-    font-size: 13px;
-    font-weight: bold;
-    transition: transform 0.25s ease, box-shadow 0.25s ease,
-                background 0.25s ease;
-}
-
-.card .button {
-    margin-top: auto;
-}
-
-.button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 7px 15px rgba(0, 0, 0, 0.13);
-}
-
-.button:focus-visible,
-nav a:focus-visible {
-    outline: 3px solid #34d399;
-    outline-offset: 3px;
-}
-
-.add {
-    background: #059669;
-}
-
-.add:hover {
-    background: #047857;
-}
-
-.listings {
-    background: #2563eb;
-}
-
-.listings:hover {
-    background: #1d4ed8;
-}
-
-.messages {
-    background: #7c3aed;
-}
-
-.messages:hover {
-    background: #6d28d9;
-}
-
-.logout {
-    background: #dc2626;
-}
-
-.logout:hover {
-    background: #b91c1c;
-}
-
-/* ================= QUICK GUIDE ================= */
-
-.dashboard-note {
-    margin-top: 28px;
-    padding: 22px 25px;
-    border: 1px solid #a7f3d0;
-    border-radius: 14px;
-    background: #ecfdf5;
-}
-
-.dashboard-note h3 {
-    color: #065f46;
-    font-size: 16px;
-    margin-bottom: 9px;
-}
-
-.dashboard-note p {
-    color: #475569;
-    font-size: 13px;
-    line-height: 1.8;
-}
-
-/* ================= LOGOUT ================= */
-
-.logout-box {
-    margin-top: 28px;
-}
-
-/* ================= FOOTER ================= */
-
-footer {
-    text-align: center;
-    color: #94a3b8;
-    font-size: 12px;
-    padding: 25px 15px;
-    margin-top: 25px;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 1000px) {
-
-    nav {
-        flex-direction: column;
-        gap: 16px;
-        padding: 20px;
-    }
-
-    nav ul {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 5px;
-    }
-
-    nav ul li {
-        margin-left: 0;
-    }
-
-    nav ul li a {
-        padding: 10px 12px;
-    }
-
-    .cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-}
-
-@media (max-width: 650px) {
-
-    .container {
-        width: 92%;
-        margin: 28px auto;
-    }
-
-    .dashboard-title {
-        font-size: 25px;
-    }
-
-    .welcome {
-        font-size: 18px;
-    }
-
-    .cards {
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
-
-    .card {
-        padding: 25px 22px;
-    }
-
-    .card .button {
-        width: 100%;
-    }
-
-    .logout-box .button {
-        width: 100%;
-    }
-
-    nav ul {
-        width: 100%;
-    }
-
-    nav ul li a {
-        font-size: 12px;
-        padding: 9px 10px;
-    }
-
-}
-
-/* ================= ACCESSIBILITY ================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        animation: none !important;
-        transition: none !important;
-    }
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landlord Dashboard | KEJAHUNT</title>
+    <meta name="theme-color" content="#064e3b">
+
+    <style>
+        :root {
+            --green: #14532d;
+            --green-dark: #064e3b;
+            --accent: #059669;
+            --background: #f4f7fb;
+            --white: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 8px 25px rgba(15, 23, 42, .06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 17px 5%;
+            background: linear-gradient(120deg, #064e3b, #14532d);
+            box-shadow: 0 4px 18px rgba(6, 78, 59, .15);
+        }
+
+        .logo {
+            color: white;
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -.7px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #6ee7b7;
+        }
+
+        nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 5px;
+            list-style: none;
+        }
+
+        nav ul a {
+            display: block;
+            padding: 10px 12px;
+            color: #ecfdf5;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 9px;
+            transition: background .2s ease;
+        }
+
+        nav ul a:hover,
+        nav ul a.active {
+            background: rgba(255, 255, 255, .14);
+            color: white;
+        }
+
+        nav ul a.logout-link {
+            background: #dc2626;
+            color: white;
+        }
+
+        nav ul a.logout-link:hover {
+            background: #b91c1c;
+        }
+
+        a:focus-visible {
+            outline: 3px solid #34d399;
+            outline-offset: 3px;
+        }
+
+        main {
+            width: 90%;
+            max-width: 1180px;
+            margin: 36px auto;
+            flex: 1;
+        }
+
+        /* WELCOME BANNER */
+
+        .welcome-banner {
+            position: relative;
+            overflow: hidden;
+            padding: 36px;
+            margin-bottom: 32px;
+            color: white;
+            background: linear-gradient(125deg, #064e3b, #047857);
+            border-radius: 22px;
+            box-shadow: 0 12px 30px rgba(6, 78, 59, .14);
+        }
+
+        .welcome-banner::after {
+            content: "";
+            position: absolute;
+            top: -105px;
+            right: -65px;
+            width: 230px;
+            height: 230px;
+            border: 35px solid rgba(255, 255, 255, .07);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 17px;
+            padding: 7px 12px;
+            color: #d1fae5;
+            background: rgba(255, 255, 255, .12);
+            border: 1px solid rgba(255, 255, 255, .16);
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .welcome-banner h1 {
+            margin-bottom: 13px;
+            font-size: clamp(27px, 4vw, 36px);
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        .welcome-banner h1 span {
+            color: #a7f3d0;
+        }
+
+        .welcome-banner p {
+            max-width: 640px;
+            margin-bottom: 22px;
+            color: #d1fae5;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .role {
+            display: inline-block;
+            padding: 7px 12px;
+            margin-bottom: 22px;
+            color: #d1fae5;
+            background: rgba(255, 255, 255, .12);
+            border: 1px solid rgba(255, 255, 255, .17);
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .welcome-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 11px;
+        }
+
+        .welcome-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 17px;
+            color: var(--green-dark);
+            background: white;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: transform .2s ease, background .2s ease;
+        }
+
+        .welcome-btn:hover {
+            background: #ecfdf5;
+            transform: translateY(-2px);
+        }
+
+        .welcome-btn.secondary {
+            color: white;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .3);
+        }
+
+        .welcome-btn.secondary:hover {
+            background: rgba(255, 255, 255, .18);
+        }
+
+        /* SECTION HEADINGS */
+
+        .section-heading {
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            display: block;
+            margin-bottom: 7px;
+            color: #059669;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+        }
+
+        .section-heading h2 {
+            margin-bottom: 7px;
+            color: #0f172a;
+            font-size: 23px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* DASHBOARD CARDS */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 21px;
+            align-items: stretch;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 0;
+            padding: 27px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            box-shadow: var(--shadow);
+            transition: transform .25s ease,
+                        box-shadow .25s ease,
+                        border-color .25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #a7f3d0;
+            box-shadow: 0 16px 34px rgba(15, 23, 42, .1);
+        }
+
+        .card-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 54px;
+            height: 54px;
+            margin-bottom: 21px;
+            background: #ecfdf5;
+            border: 1px solid #d1fae5;
+            border-radius: 15px;
+            font-size: 25px;
+        }
+
+        .card:nth-child(2) .card-icon {
+            background: #eff6ff;
+            border-color: #dbeafe;
+        }
+
+        .card:nth-child(3) .card-icon {
+            background: #f5f3ff;
+            border-color: #ede9fe;
+        }
+
+        .card h3 {
+            margin-bottom: 11px;
+            color: #0f172a;
+            font-size: 19px;
+        }
+
+        .card p {
+            flex: 1;
+            margin-bottom: 23px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.85;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            min-height: 44px;
+            padding: 11px 14px;
+            color: white;
+            background: #047857;
+            border-radius: 9px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: background .2s ease, transform .2s ease;
+        }
+
+        .card-link:hover {
+            background: #065f46;
+            transform: translateY(-1px);
+        }
+
+        .card:nth-child(2) .card-link {
+            background: #2563eb;
+        }
+
+        .card:nth-child(2) .card-link:hover {
+            background: #1d4ed8;
+        }
+
+        .card:nth-child(3) .card-link {
+            background: #7c3aed;
+        }
+
+        .card:nth-child(3) .card-link:hover {
+            background: #6d28d9;
+        }
+
+        /* TIPS PANEL */
+
+        .tips-panel {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 23px 25px;
+            margin-bottom: 28px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 15px;
+        }
+
+        .tips-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+            background: white;
+            border-radius: 12px;
+            font-size: 21px;
+        }
+
+        .tips-panel h3 {
+            margin-bottom: 8px;
+            color: #065f46;
+            font-size: 15px;
+        }
+
+        .tips-panel p {
+            color: #475569;
+            font-size: 13px;
+            line-height: 1.85;
+        }
+
+        /* FOOTER */
+
+        footer {
+            margin-top: auto;
+            padding: 25px 15px;
+            color: #64748b;
+            background: white;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        footer span {
+            color: #047857;
+            font-weight: 800;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1000px) {
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                justify-content: center;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .card:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 650px) {
+            main {
+                width: 92%;
+                margin: 24px auto;
+            }
+
+            nav {
+                padding: 17px 4%;
+            }
+
+            nav ul {
+                gap: 3px;
+            }
+
+            nav ul a {
+                padding: 9px 10px;
+                font-size: 12px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .welcome-banner {
+                padding: 27px 22px;
+                border-radius: 17px;
+            }
+
+            .welcome-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .welcome-btn {
+                width: 100%;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .card:last-child {
+                grid-column: auto;
+            }
+
+            .card {
+                padding: 24px 22px;
+            }
+
+            .tips-panel {
+                padding: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<nav>
+    <!-- NAVIGATION -->
+    <nav>
+        <a href="/" class="logo" aria-label="KEJAHUNT home">
+            🏠 KEJA<span>HUNT</span>
+        </a>
 
-<div class="logo">
-🏠 KEJA<span>HUNT</span>
-</div>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/properties">Properties</a></li>
+            <li><a href="/my_properties">My Listings</a></li>
+            <li><a href="/messages">Messages</a></li>
+            <li><a href="/logout" class="logout-link">Logout</a></li>
+        </ul>
+    </nav>
 
-<ul>
+    <main>
 
-<li>
-<a href="/">Home</a>
-</li>
+        <!-- WELCOME -->
+        <section class="welcome-banner">
+            <div class="welcome-content">
+                <span class="eyebrow">LANDLORD WORKSPACE</span>
 
-<li>
-<a href="/properties">Properties</a>
-</li>
+                <h1>
+                    Welcome back, <span>{{ user.username }}</span>!
+                </h1>
 
-<li>
-<a href="/my_properties">My Listings</a>
-</li>
+                <p>
+                    Manage your rental properties, keep your listings
+                    organised, and stay connected with house hunters.
+                    Everything you need to manage your KEJAHUNT listings
+                    starts here.
+                </p>
 
-<li>
-<a href="/messages">Messages</a>
-</li>
+                <span class="role">Role: {{ user.role }}</span>
 
-<li>
-<a href="/logout">Logout</a>
-</li>
+                <div class="welcome-actions">
+                    <a class="welcome-btn" href="/add_property">
+                        ➕ Add a Property
+                    </a>
 
-</ul>
+                    <a class="welcome-btn secondary" href="/my_properties">
+                        🏠 Manage My Listings
+                    </a>
+                </div>
+            </div>
+        </section>
 
-</nav>
+        <!-- QUICK ACTIONS -->
+        <section aria-labelledby="actions-heading">
+            <div class="section-heading">
+                <span class="section-label">YOUR WORKSPACE</span>
+                <h2 id="actions-heading">Manage your properties</h2>
+                <p>Choose an action to continue managing your rental listings.</p>
+            </div>
 
-<div class="container">
+            <div class="cards">
 
-<div class="dashboard-header">
+                <article class="card">
+                    <div class="card-icon" aria-hidden="true">➕</div>
 
-<h1 class="dashboard-title">
-Landlord Dashboard
-</h1>
+                    <h3>Add Property</h3>
 
-<h2 class="welcome">
-Welcome, <span>{{ user.username }}</span> 👋
-</h2>
+                    <p>
+                        Create a new property listing. Include its location,
+                        rental price, photos, and details to help house
+                        hunters understand what you offer.
+                    </p>
 
-<p class="role">
-Role: {{ user.role }}
-</p>
+                    <a class="card-link" href="/add_property">
+                        Add New Property <span aria-hidden="true">→</span>
+                    </a>
+                </article>
 
-</div>
+                <article class="card">
+                    <div class="card-icon" aria-hidden="true">🏘️</div>
 
-<div class="cards">
+                    <h3>My Listings</h3>
 
-<div class="card">
+                    <p>
+                        View the properties you have listed and access your
+                        existing property-management page.
+                    </p>
 
-<div class="card-icon">
-➕
-</div>
+                    <a class="card-link" href="/my_properties">
+                        View My Listings <span aria-hidden="true">→</span>
+                    </a>
+                </article>
 
-<h2>Add Property</h2>
+                <article class="card">
+                    <div class="card-icon" aria-hidden="true">💬</div>
 
-<p>
-Post a new rental property for house hunters to discover.
-Add your property details, location, price and photos to
-help potential tenants find their next home.
-</p>
+                    <h3>Messages</h3>
 
-<a class="button add" href="/add_property">
-+ Add New Property
-</a>
+                    <p>
+                        Check conversations with house hunters and respond
+                        to questions about your rental properties.
+                    </p>
 
-</div>
+                    <a class="card-link" href="/messages">
+                        Open Inbox <span aria-hidden="true">→</span>
+                    </a>
+                </article>
 
-<div class="card">
+            </div>
+        </section>
 
-<div class="card-icon">
-🏠
-</div>
+        <!-- LISTING TIPS -->
+        <aside class="tips-panel">
+            <div class="tips-icon" aria-hidden="true">💡</div>
 
-<h2>My Listings</h2>
+            <div>
+                <h3>Tips for better property listings</h3>
 
-<p>
-Manage, update and view the properties you have listed.
-Keep your rental information organised and accessible.
-</p>
+                <p>
+                    Use clear and accurate property photos, provide the
+                    correct rental price, and include useful location and
+                    house details. Responding to inquiries helps house
+                    hunters get the information they need.
+                </p>
+            </div>
+        </aside>
 
-<a class="button listings" href="/my_properties">
-View My Listings
-</a>
+    </main>
 
-</div>
-
-<div class="card">
-
-<div class="card-icon">
-💬
-</div>
-
-<h2>Inbox</h2>
-
-<p>
-View messages from house hunters and respond to property
-inquiries to help interested tenants learn more.
-</p>
-
-<a class="button messages" href="/messages">
-Open Inbox
-</a>
-
-</div>
-
-</div>
-
-<div class="dashboard-note">
-
-<h3>💡 Tips for better property listings</h3>
-
-<p>
-Use clear property photos, provide accurate rental prices,
-and include complete location and property details.
-Keeping your listings up to date helps house hunters
-make informed decisions.
-</p>
-
-</div>
-
-<div class="logout-box">
-
-<a class="button logout" href="/logout">
-Logout
-</a>
-
-</div>
-
-</div>
-
-<footer>
-&copy; 2026 KEJAHUNT. Making house hunting simpler across Kenya.
-</footer>
-
-<script>
-
-const cards = document.querySelectorAll(".card");
-
-// Preserve the original card-hover effect.
-
-cards.forEach(function (card) {
-
-    card.addEventListener("mouseenter", function () {
-        this.style.boxShadow =
-            "0 18px 35px rgba(15, 23, 42, 0.15)";
-    });
-
-    card.addEventListener("mouseleave", function () {
-        this.style.boxShadow =
-            "0 8px 25px rgba(15, 23, 42, 0.06)";
-    });
-
-});
-
-</script>
+    <footer>
+        &copy; 2026 <span>KEJAHUNT</span>.
+        Making house hunting simpler across Kenya.
+    </footer>
 
 </body>
 </html>

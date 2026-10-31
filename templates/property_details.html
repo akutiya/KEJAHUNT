@@ -1,403 +1,616 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>{{ property.title }}</title>
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    background:#f4f7fb;
-}
-
-/* ================= NAVBAR ================= */
-
-nav{
-
-    background:#14532d;
-    color:white;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:18px 40px;
-    box-shadow:0 4px 12px rgba(0,0,0,.15);
-
-}
-
-.logo{
-
-    font-size:28px;
-    font-weight:bold;
-
-}
-
-nav ul{
-
-    display:flex;
-    list-style:none;
-
-}
-
-nav ul li{
-
-    margin-left:25px;
-
-}
-
-nav ul li a{
-
-    color:white;
-    text-decoration:none;
-    font-weight:bold;
-    transition:.3s;
-
-}
-
-nav ul li a:hover{
-
-    color:#fde047;
-
-}
-
-/* ================= PAGE ================= */
-
-.container{
-
-    width:90%;
-    max-width:1000px;
-    margin:40px auto;
-
-}
-
-.back{
-
-    display:inline-block;
-    margin-bottom:25px;
-    text-decoration:none;
-    color:#2563eb;
-    font-weight:bold;
-
-}
-
-.card{
-
-    background:white;
-    border-radius:15px;
-    overflow:hidden;
-    box-shadow:0 8px 20px rgba(0,0,0,.12);
-    transition:.3s;
-
-}
-
-.card:hover{
-
-    transform:translateY(-6px);
-
-}
-
-.card img{
-
-    width:100%;
-    height:450px;
-    object-fit:cover;
-
-}
-
-.no-image{
-
-    height:450px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#eeeeee;
-    color:#777;
-    font-size:20px;
-
-}
-
-.content{
-
-    padding:30px;
-
-}
-
-.content h1{
-
-    color:#14532d;
-    margin-bottom:15px;
-
-}
-
-.price{
-
-    color:#16a34a;
-    font-size:28px;
-    font-weight:bold;
-    margin-bottom:20px;
-
-}
-
-.info{
-
-    margin-bottom:15px;
-    color:#555;
-}
-
-.description{
-
-    margin-top:25px;
-    line-height:1.7;
-    color:#444;
-
-}
-
-.contact{
-
-    margin-top:35px;
-    padding-top:25px;
-    border-top:1px solid #ddd;
-
-}
-
-.whatsapp{
-
-    display:inline-block;
-    margin-top:15px;
-    background:#16a34a;
-    color:white;
-    text-decoration:none;
-    padding:14px 24px;
-    border-radius:8px;
-    transition:.3s;
-
-}
-
-.whatsapp:hover{
-
-    background:#15803d;
-
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:768px){
-
-nav{
-
-    flex-direction:column;
-
-}
-
-nav ul{
-
-    flex-direction:column;
-    margin-top:15px;
-    text-align:center;
-
-}
-
-nav ul li{
-
-    margin:10px 0;
-
-}
-
-.card img{
-
-    height:250px;
-
-}
-
-.no-image{
-
-    height:250px;
-
-}
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ property.title }} | KEJAHUNT</title>
+
+    <style>
+        :root {
+            --green: #14532d;
+            --green-light: #166534;
+            --accent: #16a34a;
+            --background: #f4f7fb;
+            --text: #1f2937;
+            --muted: #64748b;
+            --border: #e5e7eb;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* NAVIGATION */
+
+        nav {
+            background: var(--green);
+            color: white;
+            min-height: 76px;
+            padding: 16px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            color: white;
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 26px;
+        }
+
+        nav ul a {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        nav ul a:hover {
+            color: #fde047;
+        }
+
+        /* MAIN CONTAINER */
+
+        .container {
+            width: 90%;
+            max-width: 1150px;
+            margin: 32px auto 60px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--green);
+            font-weight: bold;
+            margin-bottom: 22px;
+            transition: transform 0.2s;
+        }
+
+        .back-link:hover {
+            transform: translateX(-4px);
+        }
+
+        /* PROPERTY IMAGE */
+
+        .property-image {
+            width: 100%;
+            height: 460px;
+            display: block;
+            object-fit: cover;
+            background: #e5e7eb;
+        }
+
+        .no-image {
+            height: 350px;
+            background: linear-gradient(135deg, #e5e7eb, #f8fafc);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--muted);
+            gap: 12px;
+        }
+
+        .no-image-icon {
+            font-size: 55px;
+        }
+
+        /* PROPERTY CONTENT */
+
+        .property-card {
+            background: var(--white);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+            border: 1px solid #edf0f3;
+        }
+
+        .property-content {
+            padding: 32px;
+        }
+
+        .property-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            flex-wrap: wrap;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .property-title {
+            color: var(--green);
+            font-size: clamp(25px, 3vw, 36px);
+            line-height: 1.25;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .location {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .price-box {
+            background: #f0fdf4;
+            border: 1px solid #dcfce7;
+            padding: 15px 20px;
+            border-radius: 12px;
+            min-width: 180px;
+        }
+
+        .price-label {
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .price {
+            color: var(--green);
+            font-size: 25px;
+            font-weight: 800;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        /* FEATURES */
+
+        .section-title {
+            color: var(--green);
+            font-size: 21px;
+            margin-bottom: 18px;
+        }
+
+        .features-section {
+            padding: 28px 0;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .feature {
+            padding: 20px;
+            border: 1px solid var(--border);
+            background: #fafafa;
+            border-radius: 12px;
+        }
+
+        .feature-icon {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .feature-label {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .feature-value {
+            color: var(--text);
+            font-size: 17px;
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        /* DESCRIPTION */
+
+        .description-section {
+            padding: 25px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .description {
+            color: #4b5563;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+            line-height: 1.9;
+        }
+
+        /* CONTACT AREA */
+
+        .contact-section {
+            border-top: 1px solid var(--border);
+            padding-top: 28px;
+            margin-top: 5px;
+        }
+
+        .contact-intro {
+            color: var(--muted);
+            margin-top: -8px;
+            margin-bottom: 22px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .contact-panel {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+            background: #fff;
+            min-width: 0;
+        }
+
+        .contact-panel h3 {
+            color: var(--green);
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .panel-description {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .whatsapp {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 13px 16px;
+            background: #16a34a;
+            color: white;
+            border-radius: 9px;
+            font-weight: bold;
+            text-align: center;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .whatsapp:hover {
+            background: #15803d;
+            transform: translateY(-2px);
+        }
+
+        .no-phone {
+            color: var(--muted);
+            font-size: 14px;
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        /* MESSAGE FORM */
+
+        .message-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .message-form textarea {
+            display: block;
+            width: 100%;
+            min-height: 125px;
+            resize: vertical;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            outline: none;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 14px;
+            background: #fff;
+        }
+
+        .message-form textarea:focus {
+            border-color: var(--green-light);
+            box-shadow: 0 0 0 3px rgba(20, 83, 45, 0.1);
+        }
+
+        .send-button {
+            width: 100%;
+            border: none;
+            border-radius: 9px;
+            padding: 14px;
+            color: white;
+            background: var(--green);
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .send-button:hover {
+            background: var(--green-light);
+            transform: translateY(-1px);
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: #102d1b;
+            color: #d1d5db;
+            text-align: center;
+            padding: 22px 15px;
+            font-size: 13px;
+        }
+
+        footer strong {
+            color: white;
+        }
+
+        /* RESPONSIVE DESIGN */
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                padding: 18px 5%;
+            }
+
+            nav ul {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+
+            .container {
+                width: 94%;
+                margin-top: 22px;
+            }
+
+            .property-image {
+                height: 300px;
+            }
+
+            .property-content {
+                padding: 22px;
+            }
+
+            .property-heading {
+                flex-direction: column;
+                gap: 18px;
+            }
+
+            .price-box {
+                width: 100%;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .feature {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+
+            .feature-icon {
+                margin-bottom: 0;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .logo {
+                font-size: 22px;
+            }
+
+            nav ul {
+                gap: 12px;
+            }
+
+            nav ul a {
+                font-size: 13px;
+            }
+
+            .property-image {
+                height: 230px;
+            }
+
+            .property-content {
+                padding: 17px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
 <nav>
+    <a href="/" class="logo">🏠 KEJAHUNT</a>
 
-<div class="logo">
-
-🏠 KEJAHUNT
-
-</div>
-
-<ul>
-
-<li>
-<a href="/properties">Properties</a>
-</li>
-
-<li>
-<a href="{{ url_for('saved_properties') }}">Saved</a>
-</li>
-
-<li>
-<a href="/logout">Logout</a>
-</li>
-
-</ul>
-
+    <ul>
+        <li><a href="/properties">Properties</a></li>
+        <li><a href="{{ url_for('saved_properties') }}">Saved</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
 </nav>
 
-<div class="container">
-
-<a class="back" href="/properties">
-
-⬅ Back to Properties
-
-</a>
-
-<div class="card">
-
-{% if property.image_file %}
-
-<img src="{{ url_for('static', filename='uploads/' + property.image_file) }}">
-
-{% else %}
-
-<div class="no-image">
-
-No Image Available
-
-</div>
-
-{% endif %}
-
-<div class="content">
-
-<h1>
-
-{{ property.title }}
-
-</h1>
-
-<div class="price">
-
-💰 KES {{ property.price }}
-
-</div>
-
-<p class="info">
-
-<b>📍 Location:</b> {{ property.location }}
-
-</p>
-
-<p class="info">
-
-<b>🛏 Bedrooms:</b> {{ property.bedrooms }}
-
-</p>
-
-<p class="info">
-
-<b>🛁 Bathrooms:</b> {{ property.bathrooms }}
-
-</p>
-
-<div class="description">
-
-{{ property.description }}
-
-</div>
-
-<div class="contact">
-
-<h2>
-
-📞 Contact Landlord
-
-</h2>
-
-{% if property.phone %}
-
-<a
-class="whatsapp"
-href="https://wa.me/{{ property.phone }}?text=Hello%20I%20am%20interested%20in%20your%20property%20('{{ property.title }}')"
-target="_blank">
-
-Chat on WhatsApp
-
-</a>
-<br><br>
-<br><br>
-
-<hr>
-
-<h2>Send Message</h2>
-
-<form action="{{ url_for('send_message', property_id=property.id) }}"
-      method="POST">
-
-<textarea
-name="message"
-placeholder="Ask if this house is still available..."
-required></textarea>
-
-<br><br>
-
-<button type="submit">
-
-Send Message
-
-</button>
-
-</form>
-
-{% else %}
-
-<p style="margin-top:15px; color:#777;">
-
-No phone number provided.
-
-</p>
-
-{% endif %}
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<script>
-
-const card=document.querySelector(".card");
-
-card.addEventListener("mouseenter",function(){
-
-this.style.boxShadow="0 18px 35px rgba(0,0,0,.25)";
-
-});
-
-card.addEventListener("mouseleave",function(){
-
-this.style.boxShadow="0 8px 20px rgba(0,0,0,.12)";
-
-});
-
-</script>
+<main class="container">
+
+    <a class="back-link" href="/properties">
+        ← Back to Properties
+    </a>
+
+    <article class="property-card">
+
+        {% if property.image_file %}
+            <img
+                class="property-image"
+                src="{{ url_for('static', filename='uploads/' + property.image_file) }}"
+                alt="{{ property.title }}"
+            >
+        {% else %}
+            <div class="no-image">
+                <span class="no-image-icon">🏠</span>
+                <strong>No Property Image Available</strong>
+                <span>The landlord has not uploaded a photo yet.</span>
+            </div>
+        {% endif %}
+
+        <div class="property-content">
+
+            <div class="property-heading">
+                <div>
+                    <h1 class="property-title">{{ property.title }}</h1>
+                    <p class="location">📍 {{ property.location }}</p>
+                </div>
+
+                <div class="price-box">
+                    <div class="price-label">Listed Price</div>
+                    <div class="price">KES {{ property.price }}</div>
+                </div>
+            </div>
+
+            <section class="features-section">
+                <h2 class="section-title">Property Information</h2>
+
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">🛏️</div>
+                        <div>
+                            <div class="feature-label">Bedrooms</div>
+                            <div class="feature-value">
+                                {{ property.bedrooms if property.bedrooms else 'Not specified' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">🛁</div>
+                        <div>
+                            <div class="feature-label">Bathrooms</div>
+                            <div class="feature-value">
+                                {{ property.bathrooms if property.bathrooms else 'Not specified' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">📍</div>
+                        <div>
+                            <div class="feature-label">Location</div>
+                            <div class="feature-value">{{ property.location }}</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="description-section">
+                <h2 class="section-title">About This Property</h2>
+
+                <p class="description">{{ property.description }}</p>
+            </section>
+
+            <section class="contact-section">
+                <h2 class="section-title">Interested in This Property?</h2>
+
+                <p class="contact-intro">
+                    Contact the landlord or send a message to ask about availability and viewing arrangements.
+                </p>
+
+                <div class="contact-grid">
+
+                    <div class="contact-panel">
+                        <h3>📱 Contact Landlord</h3>
+
+                        <p class="panel-description">
+                            Start a WhatsApp conversation with the landlord.
+                        </p>
+
+                        {% if property.phone %}
+                            <a
+                                class="whatsapp"
+                                href="https://wa.me/{{ property.phone }}?text={{ ('Hello, I am interested in your property: ' ~ property.title)|urlencode }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                💬 Chat on WhatsApp
+                            </a>
+                        {% else %}
+                            <p class="no-phone">
+                                The landlord has not provided a phone number for WhatsApp contact.
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="contact-panel">
+                        <h3>✉️ Send a Message</h3>
+
+                        <p class="panel-description">
+                            Send your question through KEJAHUNT.
+                        </p>
+
+                        <form
+                            class="message-form"
+                            action="{{ url_for('send_message', property_id=property.id) }}"
+                            method="POST"
+                        >
+                            <label for="message">Your message</label>
+
+                            <textarea
+                                id="message"
+                                name="message"
+                                placeholder="Hello, is this property still available?"
+                                required
+                                minlength="2"
+                                maxlength="2000"
+                            ></textarea>
+
+                            <button class="send-button" type="submit">
+                                Send Message →
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+    </article>
+</main>
+
+<footer>
+    <p>© 2026 <strong>KEJAHUNT</strong> — Find a place to call home.</p>
+</footer>
 
 </body>
 </html>

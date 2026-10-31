@@ -64,6 +64,17 @@ with app.app_context():
     """))
     db.session.commit()
 
+    db.session.execute(text("""
+        CREATE TABLE IF NOT EXISTS property_verification (
+            property_id INTEGER PRIMARY KEY,
+            status VARCHAR(20) NOT NULL DEFAULT 'Pending',
+            reviewed_by INTEGER,
+            reviewed_at DATETIME,
+            review_note TEXT
+        )
+    """))
+    db.session.commit()
+
 
 def get_property_status(property_id):
     """Return a property's saved status."""
@@ -105,6 +116,70 @@ def attach_property_status(properties):
         prop.status = get_property_status(prop.id)
 
     return properties
+
+
+# =====================================================
+# ADMIN PROPERTY VERIFICATION HELPERS
+# =====================================================
+
+def get_verification_status(property_id):
+    row = db.session.execute(
+        text("""
+            SELECT status
+            FROM property_verification
+            WHERE property_id = :pid
+        """),
+        {"pid": property_id}
+    ).first()
+
+    if row and row[0] in ("Pending", "Verified", "Rejected"):
+        return row[0]
+
+    # Existing properties must be reviewed by an administrator.
+    db.session.execute(
+        text("""
+            INSERT OR IGNORE INTO property_verification
+            (property_id, status)
+            VALUES (:pid, 'Pending')
+        """),
+        {"pid": property_id}
+    )
+    db.session.commit()
+
+    return "Pending"
+
+
+def set_verification_status(property_id, status, admin_id, note=""):
+    if status not in ("Pending", "Verified", "Rejected"):
+        raise ValueError("Invalid verification status.")
+
+    db.session.execute(
+        text("""
+            INSERT INTO property_verification
+                (property_id, status, reviewed_by, reviewed_at, review_note)
+            VALUES
+                (:pid, :status, :admin_id, CURRENT_TIMESTAMP, :note)
+            ON CONFLICT(property_id) DO UPDATE SET
+                status = excluded.status,
+                reviewed_by = excluded.reviewed_by,
+                reviewed_at = CURRENT_TIMESTAMP,
+                review_note = excluded.review_note
+        """),
+        {
+            "pid": property_id,
+            "status": status,
+            "admin_id": admin_id,
+            "note": note
+        }
+    )
+    db.session.commit()
+
+
+def require_admin():
+    return (
+        current_user.is_authenticated
+        and current_user.role == "admin"
+    )
 
 
 # HOME
@@ -169,14 +244,16 @@ def login():
     return render_template('login.html')
 
 
-# DASHBOARD ROUTER
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    if current_user.role == "landlord":
-        return redirect(url_for('landlord_dashboard'))
+    if current_user.role == "admin":
+        return redirect(url_for("admin_dashboard"))
 
-    return redirect(url_for('user_dashboard'))
+    if current_user.role == "landlord":
+        return redirect(url_for("landlord_dashboard"))
+
+    return redirect(url_for("user_dashboard"))
 
 
 # USER DASHBOARD
@@ -575,10 +652,17 @@ def properties():
             )
         )
 
-    props = property_query.all()
+    all_properties = property_query.order_by(
+        Property.id.desc()
+    ).all()
 
-    # Add availability to the public listing objects too.
-    attach_property_status(props)
+    # Public listings must be verified by an administrator.
+    props = []
+
+    for prop in all_properties:
+        if get_verification_status(prop.id) == "Verified":
+            prop.status = get_property_status(prop.id)
+            props.append(prop)
 
     return render_template(
         'properties.html',
@@ -591,7 +675,28 @@ def properties():
 @app.route('/property/<int:property_id>')
 def property_details(property_id):
     prop = Property.query.get_or_404(property_id)
+
+    verification_status = get_verification_status(prop.id)
+
+    # Hide unverified listings from public visitors.
+    is_admin = (
+        current_user.is_authenticated
+        and current_user.role == "admin"
+    )
+
+    is_own_listing = (
+        current_user.is_authenticated
+        and current_user.role == "landlord"
+        and current_user.id == prop.landlord_id
+    )
+
+    if verification_status != "Verified" and not (
+        is_admin or is_own_listing
+    ):
+        return "This property is not currently available for public viewing.", 404
+
     prop.status = get_property_status(prop.id)
+    prop.verification_status = verification_status
 
     return render_template(
         'property_details.html',
@@ -804,6 +909,129 @@ def my_messages():
     )
 
 
+# LOAD AND SEND MESSAGES WITHIN ONE EXISTING CONVERSATION
+@app.route("/conversation/<int:contact_id>", methods=["GET", "POST"])
+@login_required
+def conversation(contact_id):
+    # A user cannot open a conversation with themselves.
+    if contact_id == current_user.id:
+        return jsonify({
+            "success": False,
+            "error": "Invalid conversation."
+        }), 400
+
+    contact = User.query.get_or_404(contact_id)
+
+    # Load messages exchanged by these two users only.
+    thread = Message.query.filter(
+        or_(
+            (
+                (Message.sender_id == current_user.id) &
+                (Message.receiver_id == contact_id)
+            ),
+            (
+                (Message.sender_id == contact_id) &
+                (Message.receiver_id == current_user.id)
+            )
+        )
+    ).order_by(Message.id.asc()).all()
+
+    # Do not allow sending messages to arbitrary users through this route.
+    if not thread:
+        return jsonify({
+            "success": False,
+            "error": "No existing conversation was found."
+        }), 404
+
+    if request.method == "GET":
+        result = []
+
+        for msg in thread:
+            result.append({
+                "id": msg.id,
+                "sender_id": msg.sender_id,
+                "sender_name": (
+                    msg.sender.username if msg.sender else "Unknown"
+                ),
+                "message": msg.message,
+                "property": (
+                    msg.property.title if msg.property else ""
+                )
+            })
+
+        return jsonify({
+            "success": True,
+            "contact_id": contact.id,
+            "contact_name": contact.username,
+            "messages": result
+        })
+
+    # Accept JSON sent by the existing messaging interface.
+    data = request.get_json(silent=True) or {}
+    message_text = str(data.get("message", "")).strip()
+
+    if not message_text:
+        return jsonify({
+            "success": False,
+            "error": "Please enter a message."
+        }), 400
+
+    if len(message_text) > 2000:
+        return jsonify({
+            "success": False,
+            "error": "Messages cannot exceed 2000 characters."
+        }), 400
+
+    # Keep the reply associated with the conversation's latest
+    # property enquiry, if one exists.
+    property_ids = {
+        msg.property_id for msg in thread if msg.property_id
+    }
+
+    requested_property_id = data.get("property_id")
+    property_id = thread[-1].property_id
+
+    if requested_property_id:
+        try:
+            requested_property_id = int(requested_property_id)
+        except (TypeError, ValueError):
+            requested_property_id = None
+
+        if requested_property_id in property_ids:
+            property_id = requested_property_id
+
+    new_message = Message(
+        sender_id=current_user.id,
+        receiver_id=contact.id,
+        property_id=property_id,
+        message=message_text
+    )
+
+    try:
+        db.session.add(new_message)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        app.logger.exception("Failed to send conversation message")
+
+        return jsonify({
+            "success": False,
+            "error": "Your message could not be saved. Please try again."
+        }), 500
+
+    return jsonify({
+        "success": True,
+        "id": new_message.id,
+        "sender_id": current_user.id,
+        "sender_name": current_user.username,
+        "message": new_message.message,
+        "property": (
+            new_message.property.title
+            if new_message.property else ""
+        )
+    }), 201
+
+
 # INBOX ROUTER
 @app.route("/inbox")
 @login_required
@@ -980,6 +1208,147 @@ def api_post_property():
         'message': 'Property posted successfully',
         'id': new_property.id
     }), 201
+
+
+# =====================================================
+# ADMIN DASHBOARD AND LISTING VERIFICATION
+# =====================================================
+
+@app.route("/admin")
+@login_required
+def admin_dashboard():
+    if not require_admin():
+        return "Access denied. Administrator account required.", 403
+
+    search = request.args.get("q", "").strip()
+    selected_status = request.args.get("status", "All").strip()
+
+    # Validate the selected verification filter.
+    if selected_status not in (
+        "All", "Pending", "Verified", "Rejected"
+    ):
+        selected_status = "All"
+
+    # Get all properties, newest first.
+    all_properties = Property.query.order_by(
+        Property.id.desc()
+    ).all()
+
+    admin_properties = []
+    all_statuses = []
+
+    for prop in all_properties:
+        # Get landlord details.
+        owner = User.query.get(prop.landlord_id)
+
+        # Attach verification status and availability for the template.
+        prop.verification_status = get_verification_status(prop.id)
+        prop.status = get_property_status(prop.id)
+
+        prop.landlord_name = (
+            owner.username if owner else "Unknown"
+        )
+        prop.landlord_email = (
+            owner.email if owner else "Unavailable"
+        )
+
+        # Collect every property's verification status for statistics.
+        all_statuses.append(prop.verification_status)
+
+        # Filter by search text.
+        if search:
+            searchable = " ".join([
+                str(prop.title or ""),
+                str(prop.location or ""),
+                str(prop.description or ""),
+                str(prop.landlord_name or ""),
+                str(prop.landlord_email or "")
+            ]).lower()
+
+            if search.lower() not in searchable:
+                continue
+
+        # Filter by verification status.
+        if selected_status != "All":
+            if prop.verification_status != selected_status:
+                continue
+
+        admin_properties.append(prop)
+
+    # Dashboard statistics.
+    total_users = User.query.count()
+
+    total_landlords = User.query.filter_by(
+        role="landlord"
+    ).count()
+
+    total_properties = len(all_properties)
+
+    pending_count = all_statuses.count("Pending")
+    verified_count = all_statuses.count("Verified")
+    rejected_count = all_statuses.count("Rejected")
+
+    return render_template(
+        "admin_dashboard.html",
+        properties=admin_properties,
+        search=search,
+        selected_status=selected_status,
+        total_users=total_users,
+        total_landlords=total_landlords,
+        total_properties=total_properties,
+        pending_count=pending_count,
+        verified_count=verified_count,
+        rejected_count=rejected_count
+    )
+
+
+@app.route(
+    "/admin/property/<int:property_id>/verify",
+    methods=["POST"]
+)
+@login_required
+def admin_verify_property(property_id):
+    if not require_admin():
+        return "Access denied. Administrator account required.", 403
+
+    prop = Property.query.get_or_404(property_id)
+
+    decision = request.form.get("decision", "").strip()
+    note = request.form.get("note", "").strip()
+
+    if decision not in ("Verified", "Rejected", "Pending"):
+        flash("Invalid verification decision.", "error")
+
+        return redirect(url_for("admin_dashboard"))
+
+    try:
+        set_verification_status(
+            property_id=prop.id,
+            status=decision,
+            admin_id=current_user.id,
+            note=note
+        )
+
+        flash(
+            f"'{prop.title}' has been marked {decision.lower()}.",
+            "success"
+        )
+
+    except Exception:
+        db.session.rollback()
+
+        flash(
+            "The verification status could not be saved.",
+            "error"
+        )
+
+    return redirect(
+        url_for(
+            "admin_dashboard",
+            q=request.form.get("q", ""),
+            status=request.form.get("status_filter", "All")
+        )
+    )
 
 
 # RUN APPLICATION

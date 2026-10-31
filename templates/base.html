@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#064e3b">
+
+    <title>{% block title %}KEJAHUNT{% endblock %}</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+            background: #f1f5f9;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #f1f5f9;
+            color: #1e293b;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .base-navbar {
+            width: 100%;
+            min-height: 70px;
+            padding: 16px 5%;
+            background: linear-gradient(135deg, #064e3b, #14532d);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .base-logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+        }
+
+        .base-logo span {
+            color: #6ee7b7;
+        }
+
+        .base-links {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .base-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 10px 12px;
+            border-radius: 8px;
+        }
+
+        .base-links a:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .base-content {
+            min-height: calc(100vh - 70px);
+        }
+
+        @media (max-width: 600px) {
+            .base-navbar {
+                justify-content: center;
+            }
+
+            .base-links {
+                justify-content: center;
+            }
+        }
+    </style>
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+    <header class="base-navbar">
+        <a class="base-logo" href="/">🏠 KEJA<span>HUNT</span></a>
+
+        <nav class="base-links">
+            <a href="/">Home</a>
+            <a href="{{ url_for('properties') }}">Properties</a>
+
+            {% if current_user.is_authenticated %}
+                {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+                {% endif %}
+
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Register</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="base-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>
